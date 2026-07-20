@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>收支流水帳（每日損益）</title>
+<style>
+:root {
+color-scheme: light;
+--surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink2: #52514e;
+--muted: #898781; --grid: #e1e0d9; --line: #c3c2b7; --border: rgba(11,11,11,.10);
+--accent: #2a78d6; --accent-soft: #eef3fb; --good: #0ca30c; --crit: #d03b3b;
+}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme=light])){
+color-scheme: dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --grid:#2c2c2a; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;
+}}
+:root[data-theme=dark]{color-scheme:dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --grid:#2c2c2a; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;
+background:var(--page);color:var(--ink);line-height:1.5;padding:20px}
+.wrap{max-width:760px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+h1{font-size:1.25rem;font-weight:700}
+header .sp{flex:1}
+.btn{font-size:.85rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);
+color:var(--ink);padding:6px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.sm{padding:3px 9px;font-size:.78rem}
+.btn.danger{color:var(--crit)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:.95rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+label{display:block;font-size:.76rem;color:var(--ink2);margin-bottom:3px}
+input,select{font:inherit;font-size:.88rem;color:var(--ink);
+background:var(--page);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{padding:6px 8px;border-bottom:1px solid var(--grid);text-align:left}
+th{color:var(--muted);font-size:.72rem;font-weight:600;border-bottom:1px solid var(--line)}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.muted{color:var(--muted);font-size:.8rem}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--accent-soft);border-radius:10px;padding:12px 14px;text-align:center}
+.stat b{font-size:1.35rem;display:block;font-variant-numeric:tabular-nums}
+.pos{color:var(--good)} .neg{color:var(--crit)}
+.rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.tag{font-size:.74rem;border-radius:6px;padding:1px 8px}
+.tag.in{background:#e5f6e5;color:var(--good)} .tag.out{background:#fbeaea;color:var(--crit)}
+:root[data-theme=dark] .tag.in{background:#1d2f1d}
+:root[data-theme=dark] .tag.out{background:#3a1f1f}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>收支流水帳</h1>
+<span class="sp"></span>
+<button class="btn" id="theme">深淺色</button>
+<button class="btn" id="exportBtn">匯出備份</button>
+<button class="btn" id="importBtn">匯入備份</button>
+<input type="file" id="importFile" accept=".json" style="display:none">
+<input type="month" id="mon" style="width:auto">
+</header>
+<div class="card">
+<div class="statgrid">
+<div class="stat"><b class="pos" id="sIn">0</b><span class="muted">本月總收入</span></div>
+<div class="stat"><b class="neg" id="sOut">0</b><span class="muted">本月總支出</span></div>
+<div class="stat"><b id="sNet">0</b><span class="muted">淨利潤</span></div>
+<div class="stat"><b id="sToday">0</b><span class="muted">今日淨額</span></div>
+</div>
+</div>
+<div class="card">
+<h2>記一筆</h2>
+<div class="rowline">
+<div><label>日期</label><input type="date" id="f_date"></div>
+<div><label>類型</label><select id="f_type"><option value="in">收入</option><option value="out">支出</option></select></div>
+<div style="flex:1;min-width:150px"><label>項目</label><input id="f_item" placeholder="例：冷氣保養費／加油" style="width:100%"></div>
+<div><label>金額</label><input type="number" id="f_amt" min="0" style="width:110px"></div>
+<div><button class="btn primary" id="add">記帳</button></div>
+</div>
+</div>
+<div class="card">
+<h2>本月明細 <span class="muted" id="monLabel"></span></h2>
+<table>
+<thead><tr><th>日期</th><th>類型</th><th>項目</th><th class="num">金額</th><th></th></tr></thead>
+<tbody id="body"></tbody>
+</table>
+</div>
+<p class="muted">資料只存在這台電腦的瀏覽器（localStorage），不會上傳。與進銷存分開記——這本帳管的是「今天到底有沒有賺錢」。</p>
+</div>
+<script>"use strict";const t=t=>document.getElementById(t),e=t=>String(t??"").replace(/[&<>"']/g,t=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[t])),n=t=>(Math.round(100*t)/100).toLocaleString("zh-Hant",{maximumFractionDigits:2}),a="cashbook-v1";let o;try{o=JSON.parse(localStorage.getItem(a)||"{}"),o&&"object"==typeof o&&!Array.isArray(o)||(o={})}catch(t){try{localStorage.setItem(a+"-corrupt-"+Date.now(),localStorage.getItem(a))}catch(t){}o={},setTimeout(()=>alert("偵測到本機資料損毀，已把損毀內容另存備份鍵並重新開始。"),0)}function r(){localStorage.setItem(a,JSON.stringify(o))}o.rows=o.rows||[];const s=t=>String(t).padStart(2,"0");function c(){const t=new Date;return t.getFullYear()+"-"+s(t.getMonth()+1)+"-"+s(t.getDate())}function i(){const a=t("mon").value;t("monLabel").textContent=a;const s=o.rows.filter(t=>t.date.startsWith(a));let l=0,m=0;const d=t("body");d.innerHTML="",s.forEach(t=>{const a="in"===t.type?"in":"out";"in"===a?l+=t.amt:m+=t.amt;const s=document.createElement("tr");s.innerHTML=`<td class="muted">${e(t.date.slice(5))}</td>\n      <td><span class="tag ${a}">${"in"===a?"收入":"支出"}</span></td>\n      <td>${e(t.item)}</td>\n      <td class="num ${"in"===a?"pos":"neg"}">${"in"===a?"+":"−"}${n(t.amt)}</td>\n      <td><button class="btn sm danger">✕</button></td>`,s.querySelector("button").onclick=()=>{if(!confirm(`刪除 ${t.date}「${t.item}」${n(t.amt)}？`))return;const e=o.rows.findIndex(e=>e.id===t.id);e>=0&&o.rows.splice(e,1),r(),i()},d.appendChild(s)}),s.length||(d.innerHTML='<tr><td colspan="5" class="muted">本月尚無紀錄</td></tr>');const u=l-m;t("sIn").textContent="$"+n(l),t("sOut").textContent="$"+n(m),t("sNet").textContent=(u<0?"−":"")+"$"+n(Math.abs(u)),t("sNet").className=u>=0?"pos":"neg";const p=c();let g=0;o.rows.filter(t=>t.date===p).forEach(t=>g+="in"===t.type?t.amt:-t.amt),t("sToday").textContent=(g<0?"−":"")+"$"+n(Math.abs(g)),t("sToday").className=g>=0?"pos":"neg"}t("f_date").value=c(),t("mon").value=c().slice(0,7),t("add").onclick=()=>{const e=t("f_date").value,n=t("f_item").value.trim(),a=parseFloat(t("f_amt").value);e&&n&&isFinite(a)&&!(a<=0)?(o.rows.push({id:Date.now(),date:e,type:t("f_type").value,item:n,amt:a}),o.rows.sort((t,e)=>e.date.localeCompare(t.date)||e.id-t.id),t("f_item").value="",t("f_amt").value="",r(),e.slice(0,7)!==t("mon").value&&(t("mon").value=e.slice(0,7)),i()):alert("請填日期、項目與正確金額")},t("mon").addEventListener("input",()=>{t("mon").value||(t("mon").value=c().slice(0,7)),i()}),t("exportBtn").onclick=()=>{const t=document.createElement("a");t.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"})),t.download="收支流水帳-備份-"+(new Date).toISOString().slice(0,10)+".json",t.click(),URL.revokeObjectURL(t.href)},t("importBtn").onclick=()=>t("importFile").click(),t("importFile").onchange=()=>{const e=t("importFile").files[0];if(!e)return;const n=new FileReader;n.onload=()=>{try{const t=JSON.parse(n.result);if(!t||"object"!=typeof t||Array.isArray(t))throw new Error("格式不對");if(!confirm("匯入將取代目前全部帳目。確定？"))return;localStorage.setItem(a,JSON.stringify(t)),location.reload()}catch(t){alert("匯入失敗：不是有效的備份檔（"+t.message+"）")}},n.readAsText(e)},t("theme").onclick=()=>{const t=document.documentElement,e=t.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");t.dataset.theme="dark"===e?"light":"dark"},i();</script>
+</body>
+</html>

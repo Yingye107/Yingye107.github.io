@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工程報價請款單（估價／報價／請款）</title>
+<style>
+:root {
+color-scheme: light;
+--surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink2: #52514e;
+--muted: #898781; --grid: #e1e0d9; --line: #c3c2b7; --border: rgba(11,11,11,.10);
+--accent: #2a78d6; --accent-soft: #eef3fb; --good: #0ca30c; --crit: #d03b3b; --warn:#b8860b;
+}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme=light])){
+color-scheme: dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --grid:#2c2c2a; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;
+}}
+:root[data-theme=dark]{color-scheme:dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --grid:#2c2c2a; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;
+background:var(--page);color:var(--ink);line-height:1.5;padding:20px}
+.wrap{max-width:960px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+h1{font-size:1.25rem;font-weight:700}
+header .sp{flex:1}
+.btn{font-size:.85rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);
+color:var(--ink);padding:6px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.sm{padding:3px 9px;font-size:.78rem}
+.btn.danger{color:var(--crit)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{font:inherit;font-size:.85rem;padding:6px 16px;border:none;background:var(--surface);
+color:var(--ink2);cursor:pointer}
+.seg button.on{background:var(--accent);color:#fff;font-weight:700}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:.95rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+label{display:block;font-size:.76rem;color:var(--ink2);margin-bottom:3px}
+input,textarea,select{width:100%;font:inherit;font-size:.88rem;color:var(--ink);
+background:var(--page);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+textarea{resize:vertical;min-height:44px}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{padding:6px 6px;border-bottom:1px solid var(--grid);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-size:.72rem;font-weight:600;border-bottom:1px solid var(--line)}
+td input,td select{padding:4px 6px}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.totbox{margin-left:auto;max-width:320px;margin-top:12px;font-size:.9rem}
+.totbox .row{display:flex;justify-content:space-between;padding:4px 0;gap:16px}
+.totbox .row.grand{border-top:1px solid var(--line);margin-top:4px;padding-top:8px;
+font-size:1.15rem;font-weight:700}
+.totbox .row.grand b{color:var(--accent)}
+.savebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);
+color:var(--ink2);border-radius:999px;padding:3px 10px;font-size:.78rem;cursor:pointer;border:none}
+.hist{font-size:.82rem}
+.hist .item{display:flex;justify-content:space-between;gap:10px;padding:7px 0;
+border-bottom:1px solid var(--grid);cursor:pointer;flex-wrap:wrap}
+.hist .item:hover{color:var(--accent)}
+.muted{color:var(--muted);font-size:.8rem}
+.profit{background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:.86rem}
+.profit .row{display:flex;justify-content:space-between;padding:2px 0;gap:16px}
+.profit .row.net{border-top:1px solid var(--line);margin-top:4px;padding-top:6px;font-weight:700}
+.neg{color:var(--crit)} .pos{color:var(--good)}
+.tag{font-size:.72rem;border-radius:6px;padding:1px 7px;background:var(--accent-soft);color:var(--ink2)}
+.tag.emp{background:#fbeaea;color:var(--crit)}
+:root[data-theme=dark] .tag.emp{background:#3a1f1f}
+@media print{
+body{background:#fff;padding:0}
+.noprint{display:none!important}
+.card{border:none;box-shadow:none;padding:0;margin-bottom:10px}
+#preview{display:block!important}
+.wrap{max-width:none}
+}
+#preview{display:none}
+.pv{background:#fff;color:#111;padding:32px;border:1px solid var(--border);border-radius:8px}
+.pv h3{font-size:1.5rem;margin-bottom:4px}
+.pv .pv-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin:16px 0}
+.pv .pv-party{font-size:.85rem;line-height:1.7}
+.pv table{margin-top:8px}
+.pv th,.pv td{border-bottom:1px solid #ddd;color:#111}
+.pv th{color:#555}
+.pv .sec{margin-top:14px;font-weight:700;font-size:.85rem;color:#333}
+.pv .totbox{color:#111}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="noprint">
+<h1>工程報價請款單</h1>
+<div class="seg" id="docSeg">
+<button data-t="est" class="on">估價單</button>
+<button data-t="quote">報價單</button>
+<button data-t="invoice">請款單</button>
+</div>
+<span class="sp"></span>
+<button class="btn" id="theme">深淺色</button>
+<button class="btn" id="newBtn">新單據</button>
+<button class="btn" id="lineBtn">複製 LINE 文字</button>
+<button class="btn primary" id="printBtn">預覽 / 列印 PDF</button>
+</header>
+<div class="card noprint">
+<h2>我的資料（會自動記住）</h2>
+<div class="grid">
+<div><label>商號／工作室名稱</label><input id="s_name" placeholder="○○水電行"></div>
+<div><label>統一編號</label><input id="s_tax" placeholder="選填"></div>
+<div><label>聯絡電話</label><input id="s_phone"></div>
+<div><label>收款資訊（請款單用）</label><input id="s_pay" placeholder="銀行代碼-帳號，選填"></div>
+<div style="grid-column:1/-1"><label>地址</label><input id="s_addr"></div>
+</div>
+</div>
+<div class="card noprint">
+<h2>客戶 <button class="btn sm" id="saveClient">＋存此客戶</button></h2>
+<div id="clientPills" class="savebar" style="margin-bottom:10px"></div>
+<div class="grid">
+<div><label>客戶名稱</label><input id="c_name" placeholder="王先生"></div>
+<div><label>電話</label><input id="c_phone"></div>
+<div style="grid-column:1/-1"><label>施工地址</label><input id="c_addr"></div>
+</div>
+</div>
+<div class="card noprint">
+<h2>單據資訊</h2>
+<div class="grid">
+<div><label>單號（自動，可改）</label><input id="d_no"></div>
+<div><label>日期</label><input id="d_date" type="date"></div>
+<div><label>營業稅</label>
+<select id="d_tax">
+<option value="none">不含稅（免稅／小規模）</option>
+<option value="add">外加 5%（開發票另加）</option>
+<option value="inc">內含 5%（總價含稅）</option>
+</select>
+</div>
+<div><label>有效期限／付款期限</label><input id="d_due" type="date"></div>
+</div>
+</div>
+<div class="card noprint">
+<h2>點工（工資）
+<button class="btn sm" id="addMaster">＋師傅</button>
+<button class="btn sm" id="addApp">＋學徒</button>
+<button class="btn sm" id="addLabor">＋自訂</button>
+<span class="sp"></span>
+<span class="muted">預設日薪：師傅 <input id="rateM" type="number" style="width:80px;display:inline-block" value="3000">
+學徒 <input id="rateA" type="number" style="width:80px;display:inline-block" value="1500">（時薪自動＝日薪÷8，可改）</span>
+</h2>
+<table>
+<thead><tr><th>人員</th><th>日薪</th><th>天</th><th>時薪</th><th>小時</th><th>小計</th><th></th></tr></thead>
+<tbody id="laborBody"></tbody>
+</table>
+</div>
+<div class="card noprint">
+<h2>點料（材料耗材）
+<select id="matLib" style="width:auto;min-width:160px"><option value="">從耗材庫加入…</option></select>
+<button class="btn sm" id="addMat">＋空白列</button>
+<button class="btn sm" id="editLib">編輯耗材庫</button>
+</h2>
+<div id="libEditor" style="display:none;margin-bottom:10px">
+<label>常用耗材庫（每行一項：名稱,售價,成本,單位　例：銅管,150,90,米）</label>
+<textarea id="libText" rows="4"></textarea>
+<button class="btn sm" id="saveLib" style="margin-top:6px">儲存耗材庫</button>
+</div>
+<table>
+<thead><tr><th>名稱</th><th>單位</th><th>單價(售)</th><th>成本</th><th>數量</th><th>小計</th><th></th></tr></thead>
+<tbody id="matBody"></tbody>
+</table>
+</div>
+<div class="card noprint">
+<h2>其他項目（車馬費、雜項…） <button class="btn sm" id="addMisc">＋新增</button></h2>
+<table>
+<thead><tr><th>項目</th><th>金額</th><th></th></tr></thead>
+<tbody id="miscBody"></tbody>
+</table>
+</div>
+<div class="card noprint">
+<h2>耗損紀錄（內部用，不列印、不向客戶請款） <button class="btn sm" id="addLoss">＋新增</button></h2>
+<p class="muted" style="margin-bottom:8px">歸屬選「員工過失」的耗損由員工自行賠償，不計入公司成本；選「公司成本」才會扣利潤。</p>
+<table>
+<thead><tr><th>項目</th><th>金額</th><th>歸屬</th><th>員工代號</th><th></th></tr></thead>
+<tbody id="lossBody"></tbody>
+</table>
+<div id="lossSum" class="muted" style="margin-top:8px"></div>
+</div>
+<div class="card noprint">
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+<div class="profit" style="flex:1;min-width:260px">
+<div style="font-weight:700;margin-bottom:6px">成本利潤試算（老闆看的，不列印）</div>
+<div class="row"><span>收入（未稅）</span><b class="num" id="p_rev">0</b></div>
+<div class="row"><span>− 材料成本</span><span class="num" id="p_mat">0</span></div>
+<div class="row"><span>− 工資成本</span><span class="num" id="p_lab">0</span></div>
+<div class="row"><span>− 公司耗損</span><span class="num" id="p_loss">0</span></div>
+<div class="row net"><span>估計利潤</span><b class="num" id="p_net">0</b></div>
+</div>
+<div class="totbox" style="min-width:260px">
+<div class="row"><span>工資小計</span><span class="num" id="t_labor">0</span></div>
+<div class="row"><span>材料小計</span><span class="num" id="t_mat">0</span></div>
+<div class="row"><span>其他</span><span class="num" id="t_misc">0</span></div>
+<div class="row"><span id="taxLabel">營業稅</span><span class="num" id="t_tax">0</span></div>
+<div class="row grand"><span id="grandLabel">總計</span><b class="num" id="t_grand">0</b></div>
+</div>
+</div>
+</div>
+<div class="card noprint savebar">
+<button class="btn primary" id="saveBtn">儲存單據</button>
+<span class="muted">存在這台電腦的瀏覽器，不會上傳。切換估價→報價→請款不用重打，直接切表頭再存。</span>
+</div>
+<div class="card noprint">
+<h2>歷史單據
+<button class="btn sm" id="exportBtn">匯出備份</button>
+<button class="btn sm" id="importBtn">匯入備份</button>
+<input type="file" id="importFile" accept=".json" style="display:none">
+</h2>
+<div id="hist" class="hist"></div>
+</div>
+<div id="preview"><div class="pv" id="pvBody"></div></div>
+</div>
+<script>"use strict";const e=e=>document.getElementById(e),t=e=>String(e??"").replace(/[&<>"']/g,e=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[e])),n=e=>{const t=parseFloat(e);return isFinite(t)?t:0},a=e=>Math.max(0,n(e)),o=e=>(Math.round(100*e)/100).toLocaleString("zh-Hant",{maximumFractionDigits:2}),l="eng-quote-v1",s={est:"估價單",quote:"報價單",invoice:"請款單"},c={est:"E",quote:"Q",invoice:"R"};let d,u="est",r=null;try{d=JSON.parse(localStorage.getItem(l)||"{}"),d&&"object"==typeof d&&!Array.isArray(d)||(d={})}catch(e){try{localStorage.setItem(l+"-corrupt-"+Date.now(),localStorage.getItem(l))}catch(e){}d={},setTimeout(()=>alert("偵測到本機資料損毀，已把損毀內容另存備份鍵並重新開始。"),0)}function i(){localStorage.setItem(l,JSON.stringify(d))}function p(e,t){const n=document.createElement("tr");return n.innerHTML=t,e.appendChild(n),n.querySelectorAll("input,select").forEach(e=>["input","change"].forEach(t=>e.addEventListener(t,b))),n.querySelector(".del").onclick=()=>{n.remove(),b()},n}function m(a,o,l,s,c){const d=n(o),u=void 0!==s?n(s):d/8;p(e("laborBody"),`\n    <td><input class="ln" value="${t(a)}"></td>\n    <td><input class="ld num" type="number" value="${d}" style="max-width:90px"></td>\n    <td><input class="ldd num" type="number" value="${n(l)}" min="0" step="0.5" style="max-width:70px"></td>\n    <td><input class="lh num" type="number" value="${u}" style="max-width:80px"></td>\n    <td><input class="lhh num" type="number" value="${n(c)}" min="0" step="0.5" style="max-width:70px"></td>\n    <td class="num sub">0</td>\n    <td><button class="btn sm danger del">✕</button></td>`),b()}function h(a,o,l,s,c){p(e("matBody"),`\n    <td><input class="mn" value="${t(a)}"></td>\n    <td><input class="mu" value="${t(o)}" style="max-width:60px"></td>\n    <td><input class="mp num" type="number" value="${n(l)}" style="max-width:90px"></td>\n    <td><input class="mc num" type="number" value="${n(s)}" style="max-width:90px"></td>\n    <td><input class="mq num" type="number" value="${n(c)}" min="0" step="0.5" style="max-width:70px"></td>\n    <td class="num sub">0</td>\n    <td><button class="btn sm danger del">✕</button></td>`),b()}function v(a,o){p(e("miscBody"),`\n    <td><input class="xn" value="${t(a)}"></td>\n    <td><input class="xa num" type="number" value="${n(o)}" style="max-width:110px"></td>\n    <td><button class="btn sm danger del">✕</button></td>`),b()}function y(a,o,l,s){p(e("lossBody"),`\n    <td><input class="on2" value="${t(a)}"></td>\n    <td><input class="oa num" type="number" value="${n(o)}" style="max-width:110px"></td>\n    <td><select class="ow"><option value="co"${"co"===l?" selected":""}>公司成本</option><option value="emp"${"emp"===l?" selected":""}>員工過失(自賠)</option></select></td>\n    <td><input class="oe" value="${t(s)}" placeholder="A" style="max-width:70px"></td>\n    <td><button class="btn sm danger del">✕</button></td>`),b()}function $(){const t=e("matLib");t.innerHTML='<option value="">從耗材庫加入…</option>',d.lib.forEach((e,n)=>{const a=document.createElement("option");a.value=n,a.textContent=e.n+"　$"+e.p+"/"+(e.u||"個"),t.appendChild(a)})}function b(){let t=0,n=[];e("laborBody").querySelectorAll("tr").forEach(e=>{const l=a(e.querySelector(".ld").value)*a(e.querySelector(".ldd").value)+a(e.querySelector(".lh").value)*a(e.querySelector(".lhh").value);e.querySelector(".sub").textContent=o(l),t+=l,n.push({n:e.querySelector(".ln").value,d:a(e.querySelector(".ld").value),dd:a(e.querySelector(".ldd").value),h:a(e.querySelector(".lh").value),hh:a(e.querySelector(".lhh").value),sub:l})});let l=0,c=0,d=[];e("matBody").querySelectorAll("tr").forEach(e=>{const t=a(e.querySelector(".mq").value),n=a(e.querySelector(".mp").value)*t;e.querySelector(".sub").textContent=o(n),l+=n,c+=a(e.querySelector(".mc").value)*t,d.push({n:e.querySelector(".mn").value,u:e.querySelector(".mu").value,p:a(e.querySelector(".mp").value),c:a(e.querySelector(".mc").value),q:t,sub:n})});let r=0,i=[];e("miscBody").querySelectorAll("tr").forEach(e=>{const t=a(e.querySelector(".xa").value);r+=t,i.push({n:e.querySelector(".xn").value,a:t})});let p=0,m=0,h=[];e("lossBody").querySelectorAll("tr").forEach(e=>{const t=a(e.querySelector(".oa").value),n=e.querySelector(".ow").value;"co"===n?p+=t:m+=t,h.push({n:e.querySelector(".on2").value,a:t,w:n,e:e.querySelector(".oe").value})});const v=t+l+r,y=e("d_tax").value;let $=0,b=v,_=v;"add"===y?($=Math.round(.05*v),b=v+$,_=v):"inc"===y&&(_=Math.round(v/1.05),$=v-_,b=v),e("t_labor").textContent=o(t),e("t_mat").textContent=o(l),e("t_misc").textContent=o(r),e("t_tax").textContent=o($),e("taxLabel").textContent="none"===y?"營業稅（無）":"add"===y?"營業稅 5%（外加）":"內含營業稅 5%",e("grandLabel").textContent=s[u]+"總計",e("t_grand").textContent=o(b);const x=_-c-t-p;return e("p_rev").textContent=o(_),e("p_mat").textContent=o(c),e("p_lab").textContent=o(t),e("p_loss").textContent=o(p),e("p_net").textContent=o(x),e("p_net").className="num "+(x>=0?"pos":"neg"),e("lossSum").textContent=`公司耗損合計 ${o(p)}（計入成本）｜員工過失合計 ${o(m)}（應由員工賠償，不計成本、不向客戶請款）`,{labor:t,mat:l,matCost:c,misc:r,base:v,tax:$,grand:b,net:_,lossCo:p,lossEmp:m,laborRows:n,matRows:d,miscRows:i,lossRows:h}}function _(){const t=e("clientPills");t.innerHTML="",d.clients.forEach((n,a)=>{const o=document.createElement("button");o.className="pill",o.textContent=n.name+(n.phone?"｜"+n.phone:""),o.onclick=()=>{e("c_name").value=n.name,e("c_phone").value=n.phone||"",e("c_addr").value=n.addr||""};const l=document.createElement("span");l.textContent=" ✕",l.style.cursor="pointer",l.onclick=e=>{e.stopPropagation(),d.clients.splice(a,1),i(),_()},o.appendChild(l),t.appendChild(o)})}function x(){const t=b();return{id:r||Date.now(),docType:u,no:e("d_no").value,date:e("d_date").value,due:e("d_due").value,taxMode:e("d_tax").value,client:{name:e("c_name").value,phone:e("c_phone").value,addr:e("c_addr").value},...t}}function g(){const n=e("hist");n.innerHTML="",d.history.length?d.history.forEach(e=>{const a=document.createElement("div");a.className="item",a.innerHTML=`<span><span class="tag">${t(s[e.docType]||"")}</span> ${t(e.no)}｜${t(e.client.name)}</span>\n      <span class="num">${o(e.grand)}　<span class="muted">${t(e.date)}</span></span>`,a.onclick=()=>f(e),n.appendChild(a)}):n.innerHTML='<span class="muted">尚無紀錄</span>'}function f(t){r=t.id,u=t.docType,document.querySelectorAll("#docSeg button").forEach(e=>e.classList.toggle("on",e.dataset.t===u)),e("d_no").value=t.no,e("d_date").value=t.date,e("d_due").value=t.due||"",e("d_tax").value=t.taxMode,e("c_name").value=t.client.name,e("c_phone").value=t.client.phone,e("c_addr").value=t.client.addr,e("laborBody").innerHTML="",e("matBody").innerHTML="",e("miscBody").innerHTML="",e("lossBody").innerHTML="",(t.laborRows||[]).forEach(e=>m(e.n,e.d,e.dd,e.h,e.hh)),(t.matRows||[]).forEach(e=>h(e.n,e.u,e.p,e.c,e.q)),(t.miscRows||[]).forEach(e=>v(e.n,e.a)),(t.lossRows||[]).forEach(e=>y(e.n,e.a,e.w,e.e)),b()}function S(){r=null;const t=new Date,n=e=>String(e).padStart(2,"0");e("d_no").value=c[u]+"-"+t.getFullYear()+n(t.getMonth()+1)+n(t.getDate())+"-"+n(t.getHours())+n(t.getMinutes())+n(t.getSeconds()),e("d_date").value=t.getFullYear()+"-"+n(t.getMonth()+1)+"-"+n(t.getDate()),e("d_due").value="",e("c_name").value="",e("c_phone").value="",e("c_addr").value="",e("laborBody").innerHTML="",e("matBody").innerHTML="",e("miscBody").innerHTML="",e("lossBody").innerHTML="",b()}function w(){const t=b(),n=[];return n.push(`【${e("s_name").value||"報價"}　${s[u]}】`),n.push(`單號：${e("d_no").value}　日期：${e("d_date").value}`),e("c_name").value&&n.push(`客戶：${e("c_name").value}`),e("c_addr").value&&n.push(`地址：${e("c_addr").value}`),n.push("────────────"),t.laborRows.length&&(n.push("■ 工資"),t.laborRows.forEach(e=>{const t=[];e.dd&&t.push(`${e.dd}天`),e.hh&&t.push(`${e.hh}小時`),n.push(`・${e.n||"工資"}　${t.join("+")||"-"}　${o(e.sub)}`)})),t.matRows.length&&(n.push("■ 材料"),t.matRows.forEach(e=>n.push(`・${e.n}　×${e.q}${e.u||""}　${o(e.sub)}`))),t.miscRows.length&&(n.push("■ 其他"),t.miscRows.forEach(e=>n.push(`・${e.n}　${o(e.a)}`))),n.push("────────────"),t.tax&&("add"===e("d_tax").value?(n.push(`小計：${o(t.base)}`),n.push(`營業稅5%：${o(t.tax)}`)):n.push(`（內含營業稅 ${o(t.tax)}）`)),n.push(`總計：${o(t.grand)}`),e("d_due").value&&n.push("invoice"===u?`付款期限：${e("d_due").value}`:`報價有效至：${e("d_due").value}`),"invoice"===u&&e("s_pay").value&&n.push(`匯款：${e("s_pay").value}`),e("s_phone").value&&n.push(`聯絡：${e("s_phone").value}`),n.join("\n")}function E(){const n=b(),a=[];n.laborRows.forEach(e=>{const n=[e.dd?e.dd+"天":"",e.hh?e.hh+"小時":""].filter(Boolean).join("+");a.push(`<tr><td>${t(e.n||"工資")}</td><td>${t(n)}</td><td class="num">${o(e.sub)}</td></tr>`)}),n.matRows.forEach(e=>a.push(`<tr><td>${t(e.n)}</td><td>${e.q}${t(e.u||"")} × ${o(e.p)}</td><td class="num">${o(e.sub)}</td></tr>`)),n.miscRows.forEach(e=>a.push(`<tr><td>${t(e.n)}</td><td></td><td class="num">${o(e.a)}</td></tr>`));const l=n.tax?"add"===e("d_tax").value?`<div class="row"><span>小計</span><span class="num">${o(n.base)}</span></div><div class="row"><span>營業稅 5%</span><span class="num">${o(n.tax)}</span></div>`:`<div class="row"><span>內含營業稅</span><span class="num">${o(n.tax)}</span></div>`:"",c="invoice"===u?"付款期限":"有效期限",d="invoice"===u&&e("s_pay").value?`<p style="margin-top:14px;font-size:.85rem">匯款資訊：${t(e("s_pay").value)}</p>`:"";e("pvBody").innerHTML=`\n    <h3>${t(e("s_name").value||"")}　${s[u]}</h3>\n    <div class="pv-meta">\n      <div class="pv-party">\n        <b>客戶</b><br>${t(e("c_name").value)}　${t(e("c_phone").value)}<br>${t(e("c_addr").value)}\n      </div>\n      <div class="pv-party" style="text-align:right">\n        單號：${t(e("d_no").value)}<br>日期：${t(e("d_date").value)}\n        ${e("d_due").value?"<br>"+c+"："+t(e("d_due").value):""}\n      </div>\n    </div>\n    <table><thead><tr><th>項目</th><th>數量／單價</th><th>金額</th></tr></thead>\n    <tbody>${a.join("")}</tbody></table>\n    <div class="totbox">\n      ${l}\n      <div class="row grand"><span>${s[u]}總計</span><b class="num">${o(n.grand)}</b></div>\n    </div>\n    ${d}\n    <div class="pv-party" style="margin-top:20px;font-size:.8rem;color:#555">\n      ${t(e("s_name").value)}　${t(e("s_phone").value)}　${e("s_tax").value?"統編："+t(e("s_tax").value):""}<br>${t(e("s_addr").value)}\n    </div>`}d.clients=d.clients||[],d.history=d.history||[],d.lib=d.lib||[{n:"電線(米)",p:50,c:30,u:"米"},{n:"銅管(米)",p:150,c:90,u:"米"},{n:"螺絲五金包",p:100,c:40,u:"包"},{n:"冷媒填充",p:800,c:400,u:"次"},{n:"矽利康",p:120,c:60,u:"條"}],document.querySelectorAll("#docSeg button").forEach(t=>t.onclick=()=>{u=t.dataset.t,document.querySelectorAll("#docSeg button").forEach(e=>e.classList.toggle("on",e===t));const n=e("d_no").value.match(/^[EQR]-(.+)$/);n&&(e("d_no").value=c[u]+"-"+n[1]),b()}),e("addMaster").onclick=()=>m("師傅",e("rateM").value,1,void 0,0),e("addApp").onclick=()=>m("學徒",e("rateA").value,1,void 0,0),e("addLabor").onclick=()=>m("",0,0,0,0),e("rateM").addEventListener("input",()=>{d.rateM=n(e("rateM").value),i()}),e("rateA").addEventListener("input",()=>{d.rateA=n(e("rateA").value),i()}),e("addMat").onclick=()=>h("","",0,0,1),e("addMisc").onclick=()=>v("",0),e("addLoss").onclick=()=>y("",0,"co",""),e("matLib").onchange=()=>{const t=e("matLib").value;if(""!==t){const e=d.lib[+t];h(e.n,e.u,e.p,e.c,1)}e("matLib").value=""},e("editLib").onclick=()=>{const t=e("libEditor"),n="none"===t.style.display;t.style.display=n?"block":"none",n&&(e("libText").value=d.lib.map(e=>[e.n,e.p,e.c,e.u].join(",")).join("\n"))},e("saveLib").onclick=()=>{d.lib=e("libText").value.split("\n").map(e=>e.trim()).filter(Boolean).map(e=>{const[t,a,o,l]=e.split(",").map(e=>(e||"").trim());return{n:t,p:n(a),c:n(o),u:l||"個"}}).filter(e=>e.n),i(),$(),e("libEditor").style.display="none"},["input","change"].forEach(t=>e("d_tax").addEventListener(t,b)),e("saveClient").onclick=()=>{const t=e("c_name").value.trim();if(!t)return;const n={name:t,phone:e("c_phone").value.trim(),addr:e("c_addr").value.trim()},a=d.clients.findIndex(e=>e.name===t&&e.phone===n.phone);a>=0?d.clients[a]=n:d.clients.push(n),i(),_()},["s_name","s_tax","s_phone","s_pay","s_addr"].forEach(t=>e(t).addEventListener("input",()=>{d[t]=e(t).value,i()})),e("saveBtn").onclick=()=>{const e=x(),t=d.history.findIndex(t=>t.id===e.id);t>=0?d.history[t]=e:d.history.unshift(e),r=e.id,d.history.length>100&&confirm("歷史已超過 100 筆，將刪除最舊的一筆。建議先按「匯出備份」保存全部資料。要繼續嗎？")&&(d.history=d.history.slice(0,100)),i(),g()},e("newBtn").onclick=S,e("lineBtn").onclick=async()=>{const t=w();try{await navigator.clipboard.writeText(t),e("lineBtn").textContent="已複製 ✓"}catch(e){prompt("自動複製失敗，請手動複製：",t)}setTimeout(()=>e("lineBtn").textContent="複製 LINE 文字",1500)},e("printBtn").onclick=()=>{E(),window.print()},e("exportBtn").onclick=()=>{const e=document.createElement("a");e.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:"application/json"})),e.download="工程報價請款-備份-"+(new Date).toISOString().slice(0,10)+".json",e.click(),URL.revokeObjectURL(e.href)},e("importBtn").onclick=()=>e("importFile").click(),e("importFile").onchange=()=>{const t=e("importFile").files[0];if(!t)return;const n=new FileReader;n.onload=()=>{try{const e=JSON.parse(n.result);if(!e||"object"!=typeof e||Array.isArray(e))throw new Error("格式不對");if(!confirm("匯入將取代目前全部資料（客戶、耗材庫、歷史單據）。確定？"))return;localStorage.setItem(l,JSON.stringify(e)),location.reload()}catch(e){alert("匯入失敗：不是有效的備份檔（"+e.message+"）")}},n.readAsText(t)},e("theme").onclick=()=>{const e=document.documentElement,t=e.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");e.dataset.theme="dark"===t?"light":"dark"},["s_name","s_tax","s_phone","s_pay","s_addr"].forEach(t=>{d[t]&&(e(t).value=d[t])}),d.rateM&&(e("rateM").value=d.rateM),d.rateA&&(e("rateA").value=d.rateA),_(),$(),g(),S();</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>工程行管理系統｜報價・派工・記帳・維修</title>
+<style>
+:root {
+color-scheme: light;
+--surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink2: #52514e;
+--muted: #898781; --line: #c3c2b7; --border: rgba(11,11,11,.10);
+--accent: #2a78d6; --accent-soft: #eef3fb;
+--nav-h: 56px;
+}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme=light])){
+color-scheme: dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;
+}}
+:root[data-theme=dark]{color-scheme:dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;
+background:var(--page);color:var(--ink);display:flex;flex-direction:column;overflow:hidden}
+/* ---- 頂列（桌機：標題＋分頁；手機：只有標題） ---- */
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;
+background:var(--surface);border-bottom:1px solid var(--border);flex:none}
+h1{font-size:1.02rem;font-weight:700;white-space:nowrap}
+h1 .sub{color:var(--muted);font-weight:400;font-size:.78rem;margin-left:6px}
+.tabs{display:flex;gap:4px;margin-left:6px}
+.tabs button{font:inherit;font-size:.88rem;padding:7px 16px;border:none;cursor:pointer;
+background:transparent;color:var(--ink2);border-radius:9px;white-space:nowrap}
+.tabs button.on{background:var(--accent);color:#fff;font-weight:700}
+.sp{flex:1}
+.theme{font-size:.8rem;border:1px solid var(--border);border-radius:8px;
+background:var(--surface);color:var(--ink);padding:5px 12px;cursor:pointer}
+/* ---- 內容區 ---- */
+main{flex:1;position:relative;min-height:0}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:none;background:var(--page);
+display:none}
+iframe.on{display:block}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+color:var(--muted);font-size:.9rem;pointer-events:none}
+/* ---- 手機底部導航 ---- */
+nav{display:none;flex:none;background:var(--surface);border-top:1px solid var(--border);
+padding-bottom:env(safe-area-inset-bottom)}
+nav .row{display:grid;grid-template-columns:repeat(4,1fr);height:var(--nav-h)}
+nav button{font:inherit;border:none;background:transparent;color:var(--muted);cursor:pointer;
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+nav button .ic{font-size:1.25rem;line-height:1}
+nav button .lb{font-size:.68rem}
+nav button.on{color:var(--accent);font-weight:700}
+@media (max-width: 700px){
+.tabs{display:none}
+nav{display:block}
+h1{font-size:.95rem}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>工程行管理系統<span class="sub">報價・派工・記帳・維修</span></h1>
+<div class="tabs" id="tabsTop"></div>
+<span class="sp"></span>
+<button class="theme" id="theme">深淺色</button>
+</header>
+<main id="main"><div class="loading" id="loading">載入中…</div></main>
+<nav><div class="row" id="tabsBottom"></div></nav>
+<script>"use strict";const e=location.hostname.endsWith("github.io"),t=[{key:"invoice",ic:"🧾",lb:"報價請款",local:"../06-工程報價請款單/index.html"},{key:"dispatch",ic:"🗓️",lb:"派工排班",local:"../07-派工排班表/index.html"},{key:"cashbook",ic:"💰",lb:"收支帳",local:"../08-收支流水帳/index.html"},{key:"repair",ic:"🔧",lb:"維修保固",local:"../09-維修保固管理/index.html"}],c=t=>e?"../"+t.key+"/":t.local,n=document.getElementById("main"),a={};function l(e){if(t.forEach(t=>{document.querySelectorAll('[data-tab="'+t.key+'"]').forEach(c=>c.classList.toggle("on",t.key===e))}),!a[e]){const l=t.find(t=>t.key===e),o=document.createElement("iframe");o.src=c(l),o.title=l.lb,o.addEventListener("load",()=>{document.getElementById("loading").style.display="none"}),a[e]=o,n.appendChild(o)}Object.entries(a).forEach(([t,c])=>c.classList.toggle("on",t===e));try{history.replaceState(null,"","#"+e)}catch(e){}}const o=document.getElementById("tabsTop"),s=document.getElementById("tabsBottom");t.forEach(e=>{const t=document.createElement("button");t.dataset.tab=e.key,t.textContent=e.lb,t.onclick=()=>l(e.key),o.appendChild(t);const c=document.createElement("button");c.dataset.tab=e.key,c.innerHTML='<span class="ic">'+e.ic+'</span><span class="lb">'+e.lb+"</span>",c.onclick=()=>l(e.key),s.appendChild(c)}),document.getElementById("theme").onclick=()=>{const e=document.documentElement,t="dark"===(e.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"))?"light":"dark";e.dataset.theme=t,Object.values(a).forEach(e=>{try{e.contentDocument.documentElement.dataset.theme=t}catch(e){}})};const d=t.some(e=>e.key===location.hash.slice(1))?location.hash.slice(1):t[0].key;l(d);</script>
+</body>
+</html>

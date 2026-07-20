@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>派工排班表＋台數紀錄</title>
+<style>
+:root {
+color-scheme: light;
+--surface: #fcfcfb; --page: #f9f9f7; --ink: #0b0b0b; --ink2: #52514e;
+--muted: #898781; --grid: #e1e0d9; --line: #c3c2b7; --border: rgba(11,11,11,.10);
+--accent: #2a78d6; --accent-soft: #eef3fb; --good: #0ca30c; --crit: #d03b3b;
+}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme=light])){
+color-scheme: dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --grid:#2c2c2a; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;
+}}
+:root[data-theme=dark]{color-scheme:dark; --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+--muted:#898781; --grid:#2c2c2a; --line:#383835; --border:rgba(255,255,255,.10);
+--accent:#3987e5; --accent-soft:#1f2a3a;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;
+background:var(--page);color:var(--ink);line-height:1.5;padding:20px}
+.wrap{max-width:960px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+h1{font-size:1.25rem;font-weight:700}
+header .sp{flex:1}
+.btn{font-size:.85rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);
+color:var(--ink);padding:6px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.sm{padding:3px 9px;font-size:.78rem}
+.btn.danger{color:var(--crit)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:.95rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+label{display:block;font-size:.76rem;color:var(--ink2);margin-bottom:3px}
+input,select,textarea{font:inherit;font-size:.88rem;color:var(--ink);
+background:var(--page);border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+table{border-collapse:collapse;width:100%;font-size:.85rem}
+th,td{padding:6px 8px;border-bottom:1px solid var(--grid);text-align:left}
+th{color:var(--muted);font-size:.72rem;font-weight:600;border-bottom:1px solid var(--line)}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.muted{color:var(--muted);font-size:.8rem}
+.code{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:.8rem}
+.rowline{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.rowline>div{min-width:0}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.stat{background:var(--accent-soft);border-radius:10px;padding:10px 14px;text-align:center}
+.stat b{font-size:1.3rem;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>派工排班表＋台數紀錄</h1>
+<span class="sp"></span>
+<button class="btn" id="theme">深淺色</button>
+<button class="btn" id="exportBtn">匯出備份</button>
+<button class="btn" id="importBtn">匯入備份</button>
+<input type="file" id="importFile" accept=".json" style="display:none">
+<button class="btn primary" id="copyDay">複製本日行程（發LINE群組）</button>
+</header>
+<div class="card">
+<h2>員工名單（代號自動 A、B、C…）
+<button class="btn sm" id="addEmp">＋新增員工</button>
+</h2>
+<table>
+<thead><tr><th>代號</th><th>姓名</th><th>電話</th><th></th></tr></thead>
+<tbody id="empBody"></tbody>
+</table>
+</div>
+<div class="card">
+<h2>選擇日期
+<input type="date" id="day" style="width:auto">
+<button class="btn sm" id="today">今天</button>
+</h2>
+</div>
+<div class="card">
+<h2>本日派工 <span class="muted" id="dayLabel"></span></h2>
+<div class="rowline" style="margin-bottom:12px">
+<div><label>員工</label><select id="j_emp" style="min-width:90px"></select></div>
+<div><label>開始</label><input type="time" id="j_from" value="09:00"></div>
+<div><label>結束</label><input type="time" id="j_to" value="12:00"></div>
+<div style="flex:1;min-width:160px"><label>任務內容</label><input id="j_task" placeholder="例：安裝分離式冷氣×2" style="width:100%"></div>
+<div style="flex:1;min-width:140px"><label>地點／客戶</label><input id="j_loc" placeholder="例：中壢王先生" style="width:100%"></div>
+<div><button class="btn primary" id="addJob">加入</button></div>
+</div>
+<table>
+<thead><tr><th>員工</th><th>時段</th><th>任務</th><th>地點／客戶</th><th></th></tr></thead>
+<tbody id="jobBody"></tbody>
+</table>
+</div>
+<div class="card">
+<h2>本日台數點記（老闆每天記一下，月底自動加總）</h2>
+<div class="rowline" style="margin-bottom:12px">
+<div><label>員工</label><select id="u_emp" style="min-width:90px"></select></div>
+<div><label>類型</label><select id="u_type"><option>安裝</option><option>維修</option><option>保養</option><option>其他</option></select></div>
+<div><label>台數</label><input type="number" id="u_n" value="1" min="1" style="width:80px"></div>
+<div><label>備註</label><input id="u_note" placeholder="選填" style="width:140px"></div>
+<div><button class="btn primary" id="addUnit">記一筆</button></div>
+</div>
+<table>
+<thead><tr><th>員工</th><th>類型</th><th class="num">台數</th><th>備註</th><th></th></tr></thead>
+<tbody id="unitBody"></tbody>
+</table>
+</div>
+<div class="card">
+<h2>本月統計 <span class="muted" id="monLabel"></span></h2>
+<div class="statgrid" id="monStats"></div>
+<table style="margin-top:12px">
+<thead><tr><th>員工</th><th class="num">安裝</th><th class="num">維修</th><th class="num">保養</th><th class="num">其他</th><th class="num">合計台數</th><th class="num">派工次數</th></tr></thead>
+<tbody id="monBody"></tbody>
+</table>
+</div>
+<p class="muted">資料只存在這台電腦的瀏覽器（localStorage），不會上傳。清瀏覽器資料前請先手動備份。</p>
+</div>
+<script>"use strict";const t=t=>document.getElementById(t),e=t=>String(t??"").replace(/[&<>"']/g,t=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[t])),n="dispatch-v1";let o;try{o=JSON.parse(localStorage.getItem(n)||"{}"),o&&"object"==typeof o&&!Array.isArray(o)||(o={})}catch(t){try{localStorage.setItem(n+"-corrupt-"+Date.now(),localStorage.getItem(n))}catch(t){}o={},setTimeout(()=>alert("偵測到本機資料損毀，已把損毀內容另存備份鍵並重新開始。"),0)}if(o.emps=o.emps||[],o.jobs=o.jobs||{},o.units=o.units||{},void 0===o.codeSeq){let t=0;o.emps.forEach(e=>{let n=-1;/^[A-Z]$/.test(e.code)?n=e.code.charCodeAt(0)-65:/^Z\d+$/.test(e.code)&&(n=24+parseInt(e.code.slice(1))),n+1>t&&(t=n+1)}),o.codeSeq=t}function a(){localStorage.setItem(n,JSON.stringify(o))}const s=t=>String(t).padStart(2,"0");function c(){const t=new Date;return t.getFullYear()+"-"+s(t.getMonth()+1)+"-"+s(t.getDate())}function r(){const t=o.codeSeq||0;return o.codeSeq=t+1,t<26?String.fromCharCode(65+t):"Z"+(t-24)}function d(){const n=t("empBody");n.innerHTML="",o.emps.forEach((t,s)=>{const c=document.createElement("tr");c.innerHTML=`<td><span class="code">${e(t.code)}</span></td>\n      <td><input value="${e(t.name)}" data-f="name" style="width:100%"></td>\n      <td><input value="${e(t.phone)}" data-f="phone" style="width:100%"></td>\n      <td><button class="btn sm danger">✕</button></td>`,c.querySelectorAll("input").forEach(t=>t.addEventListener("input",()=>{o.emps[s][t.dataset.f]=t.value,a(),i()})),c.querySelector("button").onclick=()=>{confirm("刪除員工 "+t.code+(t.name?"·"+t.name:"")+"？其歷史紀錄會保留並標「已離職」，代號不會給新人。")&&(o.emps.splice(s,1),a(),d(),f())},n.appendChild(c)}),i()}function l(t){const e=o.emps.find(e=>e.code===t);return e?e.code+(e.name?"·"+e.name:""):t+"·（已離職）"}function i(){["j_emp","u_emp"].forEach(e=>{const n=t(e),a=n.value;n.innerHTML="",o.emps.forEach(t=>{const e=document.createElement("option");e.value=t.code,e.textContent=t.code+(t.name?"　"+t.name:""),n.appendChild(e)}),[...n.options].some(t=>t.value===a)&&(n.value=a)})}function u(){const n=t("day").value,s=t("jobBody");s.innerHTML="",(o.jobs[n]||[]).forEach((t,c)=>{const r=document.createElement("tr");r.innerHTML=`<td><span class="code">${e(t.emp)}</span> ${e(l(t.emp).split("·")[1]||"")}</td>\n      <td class="num">${e(t.from)}–${e(t.to)}</td>\n      <td>${e(t.task)}</td><td>${e(t.loc)}</td>\n      <td><button class="btn sm danger">✕</button></td>`,r.querySelector("button").onclick=()=>{o.jobs[n].splice(c,1),a(),f()},s.appendChild(r)}),(o.jobs[n]||[]).length||(s.innerHTML='<tr><td colspan="5" class="muted">本日尚無派工</td></tr>')}function m(){const n=t("day").value,s=t("unitBody");s.innerHTML="",(o.units[n]||[]).forEach((t,c)=>{const r=document.createElement("tr");r.innerHTML=`<td><span class="code">${e(t.emp)}</span></td><td>${e(t.type)}</td>\n      <td class="num">${+t.n||0}</td><td>${e(t.note)}</td>\n      <td><button class="btn sm danger">✕</button></td>`,r.querySelector("button").onclick=()=>{o.units[n].splice(c,1),a(),f()},s.appendChild(r)}),(o.units[n]||[]).length||(s.innerHTML='<tr><td colspan="5" class="muted">本日尚無紀錄</td></tr>')}function p(){const n=t("day").value;if(!n)return;const a=n.slice(0,7);t("monLabel").textContent=a;const s=["安裝","維修","保養","其他"],c={};o.emps.forEach(t=>c[t.code]={"安裝":0,"維修":0,"保養":0,"其他":0,jobs:0});let r=0;Object.keys(o.units).filter(t=>t.startsWith(a)).forEach(t=>o.units[t].forEach(t=>{c[t.emp]=c[t.emp]||{"安裝":0,"維修":0,"保養":0,"其他":0,jobs:0},c[t.emp][t.type]=(c[t.emp][t.type]||0)+t.n,r+=t.n})),Object.keys(o.jobs).filter(t=>t.startsWith(a)).forEach(t=>o.jobs[t].forEach(t=>{c[t.emp]=c[t.emp]||{"安裝":0,"維修":0,"保養":0,"其他":0,jobs:0},c[t.emp].jobs++}));const d=t("monBody");d.innerHTML="",Object.keys(c).sort().forEach(t=>{const n=c[t],o=s.reduce((t,e)=>t+(n[e]||0),0),a=document.createElement("tr");a.innerHTML=`<td><span class="code">${e(t)}</span> ${e(l(t).split("·")[1]||"")}</td>\n      <td class="num">${n.安裝||0}</td><td class="num">${n.維修||0}</td><td class="num">${n.保養||0}</td>\n      <td class="num">${n.其他||0}</td><td class="num"><b>${o}</b></td><td class="num">${n.jobs}</td>`,d.appendChild(a)});const i=new Set(Object.keys(o.units).filter(t=>t.startsWith(a)&&o.units[t].length)).size;t("monStats").innerHTML=`\n    <div class="stat"><b>${r}</b><span class="muted">本月總台數</span></div>\n    <div class="stat"><b>${i}</b><span class="muted">有紀錄天數</span></div>\n    <div class="stat"><b>${i?(r/i).toFixed(1):0}</b><span class="muted">日均台數</span></div>`}function f(){t("dayLabel").textContent=t("day").value,u(),m(),p()}t("addEmp").onclick=()=>{o.emps.push({code:r(),name:"",phone:""}),a(),d(),f()},t("day").value=c(),t("today").onclick=()=>{t("day").value=c(),f()},t("day").addEventListener("input",()=>{t("day").value||(t("day").value=c()),f()}),t("addJob").onclick=()=>{if(!o.emps.length)return void alert("請先新增員工");const e=t("day").value;if(!e)return void alert("請先選日期");const n=t("j_from").value,s=t("j_to").value,c=t("j_task").value.trim();if(!c)return void alert("請填任務內容");if(!n||!s||s<=n)return void alert("時段不對：結束時間必須晚於開始時間");const r=t("j_emp").value,d=(o.jobs[e]||[]).find(t=>t.emp===r&&n<t.to&&t.from<s);d&&!confirm(`${l(r)} 在 ${d.from}–${d.to} 已有「${d.task}」，時段重疊。仍要加入？`)||(o.jobs[e]=o.jobs[e]||[],o.jobs[e].push({emp:r,from:n,to:s,task:c,loc:t("j_loc").value.trim()}),o.jobs[e].sort((t,e)=>(t.from||"").localeCompare(e.from||"")),t("j_task").value="",t("j_loc").value="",a(),f())},t("addUnit").onclick=()=>{if(!o.emps.length)return void alert("請先新增員工");const e=t("day").value;o.units[e]=o.units[e]||[],o.units[e].push({emp:t("u_emp").value,type:t("u_type").value,n:Math.max(1,parseInt(t("u_n").value)||1),note:t("u_note").value.trim()}),t("u_note").value="",t("u_n").value=1,a(),f()},t("copyDay").onclick=async()=>{const e=t("day").value,n=o.jobs[e]||[];if(!n.length)return void alert("本日沒有派工可複製");const a={};n.forEach(t=>{(a[t.emp]=a[t.emp]||[]).push(t)});const s=[`【${e} 派工表】`];Object.keys(a).sort().forEach(t=>{s.push(`▍${l(t)}`),a[t].forEach(t=>s.push(`　${t.from}–${t.to}　${t.task}${t.loc?"＠"+t.loc:""}`))});const c=s.join("\n");try{await navigator.clipboard.writeText(c),t("copyDay").textContent="已複製 ✓"}catch(t){prompt("自動複製失敗，請手動複製：",c)}setTimeout(()=>t("copyDay").textContent="複製本日行程（發LINE群組）",1500)},t("exportBtn").onclick=()=>{const t=document.createElement("a");t.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"})),t.download="派工排班-備份-"+(new Date).toISOString().slice(0,10)+".json",t.click(),URL.revokeObjectURL(t.href)},t("importBtn").onclick=()=>t("importFile").click(),t("importFile").onchange=()=>{const e=t("importFile").files[0];if(!e)return;const o=new FileReader;o.onload=()=>{try{const t=JSON.parse(o.result);if(!t||"object"!=typeof t||Array.isArray(t))throw new Error("格式不對");if(!confirm("匯入將取代目前全部資料（員工、派工、台數）。確定？"))return;localStorage.setItem(n,JSON.stringify(t)),location.reload()}catch(t){alert("匯入失敗：不是有效的備份檔（"+t.message+"）")}},o.readAsText(e)},t("theme").onclick=()=>{const t=document.documentElement,e=t.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");t.dataset.theme="dark"===e?"light":"dark"},d(),f();</script>
+</body>
+</html>
