@@ -47,7 +47,7 @@ nav button.on{color:var(--accent);font-weight:700}
 <span class="sp"></span>
 <button class="hbtn" id="theme">深淺色</button>
 </header>
-<div id="syncBar"><span id="syncStatus">✔ 自動存檔（本機）</span><span class="sp"></span><button class="hbtn" id="cloudBtn" style="display:none"></button></div>
+<div id="syncBar"><span id="syncStatus">✔ 自動存檔（本機）</span><span class="sp"></span><button class="hbtn" id="saveNowBtn">立即存檔</button><button class="hbtn" id="cloudBtn" style="display:none"></button></div>
 <main id="main"></main>
 <nav><div class="row" id="tabsBottom"></div></nav>
 <script>
@@ -95,6 +95,18 @@ window.SuiteData = {
 window.addEventListener('storage', function(e){
   if (DATA_KEYS.indexOf(e.key) >= 0 && typeof window.SuiteData.onChange === 'function') window.SuiteData.onChange();
 });
+
+/* 立即存檔：資料本來就即時存在本機；若已登入雲端則強制馬上推雲（跳過 1.5 秒節流） */
+window.__cloudPushNow = null;   // 雲端 IIFE 登入後設成立即推雲的函式
+document.getElementById('saveNowBtn').onclick = function(){
+  var s = document.getElementById('syncStatus');
+  var t = new Date(), hh = String(t.getHours()).padStart(2,'0'), mm = String(t.getMinutes()).padStart(2,'0'), ss = String(t.getSeconds()).padStart(2,'0');
+  if (typeof window.__cloudPushNow === 'function') {
+    window.__cloudPushNow();   // pushNow 自己會把狀態更新成「時分秒 儲存成功（雲端）」
+  } else {
+    s.textContent = '✔ ' + hh+':'+mm+':'+ss + ' 儲存成功（本機，未登入雲端）'; s.className = 'ok';
+  }
+};
 
 showTab(APPS[0].key);
 
@@ -155,7 +167,7 @@ showTab(APPS[0].key);
     }catch(e){ setStatus('emu err:'+e.message,'warn'); } }
     authMod.onAuthStateChanged(auth, function(user){
       if(user){ uid=user.uid; onLogin(); }
-      else { uid=null; if(unsub){unsub();unsub=null;} cloudBtn.textContent='登入雲端'; cloudBtn.onclick=login; setStatus('✔ 自動存檔（本機）｜未登入雲端'); }
+      else { uid=null; window.__cloudPushNow=null; if(unsub){unsub();unsub=null;} cloudBtn.textContent='登入雲端'; cloudBtn.onclick=login; setStatus('✔ 自動存檔（本機）｜未登入雲端'); }
     });
   }).catch(function(e){
     setStatus('⚠ 雲端載入失敗（離線或設定錯）；本機照常運作','warn');
@@ -172,6 +184,7 @@ showTab(APPS[0].key);
   function userDoc(){ return fb.fsMod.doc(db,'users',uid); }
   function onLogin(){
     cloudBtn.textContent='登出（'+((auth.currentUser&&auth.currentUser.email)||uid.slice(0,6))+'）'; cloudBtn.onclick=logout;
+    window.__cloudPushNow=function(){ clearTimeout(pushTimer); pushNow(); };   // 「立即存檔」按鈕用
     setStatus('☁ 同步中…');
     fb.fsMod.getDoc(userDoc()).then(function(snap){
       var cloud=snap.exists()?snap.data():null;
@@ -189,7 +202,9 @@ showTab(APPS[0].key);
   }
   function pushNow(){
     if(!uid) return; var payload=window.SuiteData.collect();
-    fb.fsMod.setDoc(userDoc(),payload).then(function(){ lastAppliedAt=payload.savedAt; setOwner(); setStatus('✔ 已存到雲端 '+payload.savedAt.slice(11,19)); })
+    fb.fsMod.setDoc(userDoc(),payload).then(function(){ lastAppliedAt=payload.savedAt; setOwner();
+      var t=new Date(), hh=String(t.getHours()).padStart(2,'0'), mm=String(t.getMinutes()).padStart(2,'0'), ss=String(t.getSeconds()).padStart(2,'0');
+      setStatus('✔ '+hh+':'+mm+':'+ss+' 儲存成功（雲端）'); })
       .catch(function(e){ setStatus('⚠ 上雲失敗：'+e.message,'warn'); });
   }
   window.SuiteData.onChange=function(){ if(!uid) return; clearTimeout(pushTimer); pushTimer=setTimeout(pushNow,1500); };
