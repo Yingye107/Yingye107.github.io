@@ -92,8 +92,18 @@ window.SuiteData = {
   reloadTools: function(){ Object.keys(views).forEach(function(k){ try{ views[k].contentWindow.location.reload(); }catch(e){} }); },
   onChange: null   // 階段二設成 function(){ 推雲端 }
 };
+/* 每次自動存檔（內嵌工具寫 localStorage）都更新狀態列時間，讓使用者看得到「剛剛存過」。
+   用 __cloudPushNow（登入才有）判斷是否登入雲端，而非 onChange（一直存在）。 */
 window.addEventListener('storage', function(e){
-  if (DATA_KEYS.indexOf(e.key) >= 0 && typeof window.SuiteData.onChange === 'function') window.SuiteData.onChange();
+  if (DATA_KEYS.indexOf(e.key) < 0) return;
+  var s = document.getElementById('syncStatus');
+  var t = new Date(), hh = String(t.getHours()).padStart(2,'0'), mm = String(t.getMinutes()).padStart(2,'0'), ss = String(t.getSeconds()).padStart(2,'0');
+  if (typeof window.__cloudPushNow === 'function') {
+    s.textContent = '☁ ' + hh+':'+mm+':'+ss + ' 存檔中…'; s.className = '';   // 稍後 pushNow 顯示「儲存成功（雲端）」
+  } else {
+    s.textContent = '✔ ' + hh+':'+mm+':'+ss + ' 已自動存檔（本機）'; s.className = 'ok';
+  }
+  if (typeof window.SuiteData.onChange === 'function') window.SuiteData.onChange();   // 登入時節流推雲；未登入自動 no-op
 });
 
 /* 立即存檔：資料本來就即時存在本機；若已登入雲端則強制馬上推雲（跳過 1.5 秒節流） */
@@ -210,9 +220,17 @@ showTab(APPS[0].key);
   window.SuiteData.onChange=function(){ if(!uid) return; clearTimeout(pushTimer); pushTimer=setTimeout(pushNow,1500); };
 })();
 
-/* Service Worker（離線） */
+/* Service Worker（離線）＋自動更新：偵測到新版 SW 接管就自動重載，之後每次改版使用者免手動清快取 */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  if (navigator.serviceWorker.controller) {   // 只在「已被舊 SW 控制」時掛（首次造訪不觸發多餘重載）
+    var __refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function(){
+      if (__refreshing) return; __refreshing = true; location.reload();
+    });
+  }
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').then(function(reg){ try{ reg.update(); }catch(e){} }).catch(function(){});
+  });
 }
 </script>
 </body>
