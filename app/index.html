@@ -115,6 +115,13 @@ showTab(APPS[0].key);
     return 'noop';
   }
   function shouldApplyIncoming(inc,last){ if(!inc||!inc.savedAt) return false; if(!last) return true; return inc.savedAt>last; }
+  function decideLogin(owner, u, local, cloud){
+    var cloudHas=cloud&&cloud.savedAt&&cloud.data&&Object.keys(cloud.data).length>0;
+    if(owner&&owner!==u) return cloudHas?'pull':'clear';   // 別帳號的本機殘留：絕不上推
+    return decideMerge(local,cloud);
+  }
+  function clearLocal(){ DATA_KEYS.forEach(function(k){ localStorage.removeItem(k); }); }
+  function setOwner(){ if(uid) localStorage.setItem('fb-owner', uid); }
   function getConfig(){ try{ return JSON.parse(localStorage.getItem(CFG_KEY)||'null'); }catch(e){ return null; } }
   function setStatus(t,c){ statusEl.textContent=t; statusEl.className=c||''; }
   function askConfig(){
@@ -122,7 +129,7 @@ showTab(APPS[0].key);
     if(!raw) return;
     var cfg;
     try{
-      var m=raw.match(/{[sS]*}/); if(!m) throw new Error('找不到 { } 設定物件');
+      var m=raw.match(/\{[\s\S]*\}/); if(!m) throw new Error('找不到 { } 設定物件');
       cfg=(new Function('return ('+m[0]+')'))();
       if(!cfg.apiKey||!cfg.projectId) throw new Error('缺 apiKey 或 projectId');
     }catch(e){ alert('設定格式不對：'+e.message); return; }
@@ -142,7 +149,8 @@ showTab(APPS[0].key);
     if(location.search.indexOf('emu')>=0){ try{
       authMod.connectAuthEmulator(auth,'http://127.0.0.1:9099',{disableWarnings:true});
       fsMod.connectFirestoreEmulator(db,'127.0.0.1',8080);
-      window.__cloud={ get uid(){return uid;}, get status(){return statusEl.textContent;} };
+      window.__cloud={ get uid(){return uid;}, get status(){return statusEl.textContent;}, get owner(){return localStorage.getItem('fb-owner');},
+        signOut:function(){return authMod.signOut(auth);}, signInNew:function(){return authMod.signInAnonymously(auth);} };
       authMod.signInAnonymously(auth);
     }catch(e){ setStatus('emu err:'+e.message,'warn'); } }
     authMod.onAuthStateChanged(auth, function(user){
@@ -155,26 +163,33 @@ showTab(APPS[0].key);
     cloudBtn.onclick=function(){ localStorage.removeItem(CFG_KEY); location.reload(); };
   });
   function login(){ fb.authMod.signInWithPopup(auth, new fb.authMod.GoogleAuthProvider()).catch(function(e){ setStatus('⚠ 登入失敗：'+e.message,'warn'); }); }
-  function logout(){ fb.authMod.signOut(auth); }
+  function logout(){
+    var clear=confirm('要同時清除這台裝置上的本機資料嗎？\n\n確定＝清除（多人共用這台裝置時選這個；資料仍在雲端，下次登入會拉回）\n取消＝保留在本機');
+    fb.authMod.signOut(auth).then(function(){
+      if(clear){ clearLocal(); localStorage.removeItem('fb-owner'); lastAppliedAt=null; window.SuiteData.reloadTools(); }
+    });
+  }
   function userDoc(){ return fb.fsMod.doc(db,'users',uid); }
   function onLogin(){
     cloudBtn.textContent='登出（'+((auth.currentUser&&auth.currentUser.email)||uid.slice(0,6))+'）'; cloudBtn.onclick=logout;
     setStatus('☁ 同步中…');
     fb.fsMod.getDoc(userDoc()).then(function(snap){
-      var cloud=snap.exists()?snap.data():null; var local=window.SuiteData.collect();
-      var d=decideMerge(local,cloud);
-      if(d==='pull'){ window.SuiteData.apply(cloud); lastAppliedAt=cloud.savedAt; window.SuiteData.reloadTools(); setStatus('✔ 雲端已同步（已載入雲端資料）'); }
+      var cloud=snap.exists()?snap.data():null;
+      var owner=localStorage.getItem('fb-owner');
+      var d=decideLogin(owner, uid, window.SuiteData.collect(), cloud);
+      if(d==='pull'){ window.SuiteData.apply(cloud); lastAppliedAt=cloud.savedAt; setOwner(); window.SuiteData.reloadTools(); setStatus('✔ 雲端已同步（已載入雲端資料）'); }
+      else if(d==='clear'){ clearLocal(); lastAppliedAt=null; setOwner(); window.SuiteData.reloadTools(); setStatus('✔ 已切換帳號（此帳號雲端尚無資料，本機已清空）'); }
       else if(d==='push'){ pushNow(); }
-      else { lastAppliedAt=cloud?cloud.savedAt:null; setStatus('✔ 雲端已同步'); }
+      else { lastAppliedAt=cloud?cloud.savedAt:null; setOwner(); setStatus('✔ 雲端已同步'); }
       unsub=fb.fsMod.onSnapshot(userDoc(), function(s){
         if(!s.exists()) return; var inc=s.data();
-        if(shouldApplyIncoming(inc,lastAppliedAt)){ window.SuiteData.apply(inc); lastAppliedAt=inc.savedAt; window.SuiteData.reloadTools(); setStatus('✔ 已從其他裝置更新'); }
+        if(shouldApplyIncoming(inc,lastAppliedAt)){ window.SuiteData.apply(inc); lastAppliedAt=inc.savedAt; setOwner(); window.SuiteData.reloadTools(); setStatus('✔ 已從其他裝置更新'); }
       });
     }).catch(function(e){ setStatus('⚠ 同步失敗：'+e.message,'warn'); });
   }
   function pushNow(){
     if(!uid) return; var payload=window.SuiteData.collect();
-    fb.fsMod.setDoc(userDoc(),payload).then(function(){ lastAppliedAt=payload.savedAt; setStatus('✔ 已存到雲端 '+payload.savedAt.slice(11,19)); })
+    fb.fsMod.setDoc(userDoc(),payload).then(function(){ lastAppliedAt=payload.savedAt; setOwner(); setStatus('✔ 已存到雲端 '+payload.savedAt.slice(11,19)); })
       .catch(function(e){ setStatus('⚠ 上雲失敗：'+e.message,'warn'); });
   }
   window.SuiteData.onChange=function(){ if(!uid) return; clearTimeout(pushTimer); pushTimer=setTimeout(pushNow,1500); };
