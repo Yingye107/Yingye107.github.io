@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head><!--__demo_shim_applied__--><script>(function(){var _m=new Map();var s={getItem:function(k){return _m.has(k)?_m.get(k):null;},setItem:function(k,v){_m.set(k,String(v));},removeItem:function(k){_m.delete(k);},clear:function(){_m.clear();},key:function(i){return Array.from(_m.keys())[i]||null;}};Object.defineProperty(s,'length',{get:function(){return _m.size;}});try{Object.defineProperty(window,'localStorage',{value:s,configurable:true});}catch(e){window.localStorage=s;}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>簡易客戶追蹤</title>
+<style>
+:root{color-scheme:light;--surface:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;
+--muted:#898781;--grid:#e1e0d9;--line:#c3c2b7;--border:rgba(11,11,11,.10);
+--accent:#2a78d6;--accent-soft:#eef3fb;--good:#0ca30c;--good-bg:#e8f6e8;
+--warn-bg:#fdf3e0;--warn-text:#8a5b00;--crit:#d03b3b;--crit-bg:#fbeaea;--crit-text:#a32e2e;}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){color-scheme:dark;
+--surface:#1a1a19;--page:#0d0d0d;--ink:#fff;--ink2:#c3c2b7;--grid:#2c2c2a;--line:#383835;
+--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-soft:#1f2a3a;--good-bg:#14290f;
+--warn-bg:#33270e;--warn-text:#e0a93f;--crit-bg:#351b1b;--crit-text:#e66767;}}
+:root[data-theme=dark]{color-scheme:dark;--surface:#1a1a19;--page:#0d0d0d;--ink:#fff;--ink2:#c3c2b7;
+--grid:#2c2c2a;--line:#383835;--border:rgba(255,255,255,.10);--accent:#3987e5;--accent-soft:#1f2a3a;
+--good-bg:#14290f;--warn-bg:#33270e;--warn-text:#e0a93f;--crit-bg:#351b1b;--crit-text:#e66767;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;
+background:var(--page);color:var(--ink);line-height:1.5;padding:20px}
+.wrap{max-width:940px;margin:0 auto}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}
+h1{font-size:1.3rem;font-weight:700}header .sp{flex:1}
+.btn{font-size:.85rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);
+color:var(--ink);padding:6px 14px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.btn.sm{padding:3px 9px;font-size:.78rem}.btn.danger{color:var(--crit)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+.tile .label{font-size:.76rem;color:var(--muted)}
+.tile .value{font-size:1.5rem;font-weight:700}
+.tile.warn{border-color:var(--warn-text)}.tile.warn .value{color:var(--warn-text)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.card h2{font-size:.95rem;font-weight:700;margin-bottom:12px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.toolbar input[type=search]{flex:1;min-width:160px}
+input,select,textarea{width:100%;font:inherit;font-size:.88rem;color:var(--ink);background:var(--page);
+border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+textarea{resize:vertical;min-height:44px}
+label{display:block;font-size:.76rem;color:var(--ink2);margin-bottom:3px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end}
+.msg{font-size:.82rem;padding:8px 12px;border-radius:8px;margin-bottom:10px;display:none}
+.msg.show{display:block}.msg.ok{background:var(--good-bg);color:var(--good)}
+.msg.err{background:var(--crit-bg);color:var(--crit-text)}
+.cust{border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;background:var(--page)}
+.cust .top{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.cust .nm{font-weight:700}
+.cust .meta{font-size:.8rem;color:var(--muted)}
+.cust.due{border-color:var(--warn-text)}
+.cust.overdue{border-color:var(--crit)}
+.st{border-radius:6px;padding:1px 9px;font-size:.74rem;font-weight:600;white-space:nowrap}
+.st.lead{background:var(--accent-soft);color:var(--accent)}
+.st.talking{background:var(--warn-bg);color:var(--warn-text)}
+.st.won{background:var(--good-bg);color:var(--good)}
+.st.hold{background:var(--grid);color:var(--muted)}
+.follow{font-size:.78rem;border-radius:6px;padding:1px 8px}
+.follow.due{background:var(--warn-bg);color:var(--warn-text)}
+.follow.overdue{background:var(--crit-bg);color:var(--crit-text);font-weight:600}
+.detail{margin-top:10px;padding-top:10px;border-top:1px solid var(--grid);display:none}
+.detail.on{display:block}
+.logline{font-size:.82rem;color:var(--ink2);padding:3px 0;border-bottom:1px solid var(--grid)}
+.logline .d{color:var(--muted);margin-right:8px;font-variant-numeric:tabular-nums}
+.addlog{display:flex;gap:6px;margin-top:8px}
+.addlog input{flex:1}
+.sp8{flex:1}
+.muted{color:var(--muted);font-size:.85rem}
+.pushbtn{margin-left:auto}
+</style>
+</head>
+<body><div style="background:#fff3cd;color:#664d03;font-size:13px;line-height:1.5;text-align:center;padding:8px 14px;border-bottom:1px solid #f0ad4e;font-family:system-ui,-apple-system,'Segoe UI','Microsoft JhengHei',sans-serif">🧪 試用版：資料僅暫存於本次瀏覽，重新整理頁面即清空，不會保存在您的裝置上。正式交付版本可為您永久保存資料。</div>
+<div class="wrap">
+<header>
+<h1>簡易客戶追蹤</h1><span class="sp"></span>
+<button class="btn" id="theme">深淺色</button>
+<button class="btn" id="demo">示範資料</button>
+<button class="btn primary" id="newC">＋新增客戶</button>
+</header>
+<div class="tiles" id="tiles"></div>
+<div class="card" id="formCard" style="display:none">
+<h2 id="formTitle">新增客戶</h2>
+<div id="fMsg" class="msg"></div>
+<div class="row">
+<div><label>客戶名稱</label><input id="f_name" placeholder="王小明／甲公司"></div>
+<div><label>電話</label><input id="f_phone"></div>
+<div><label>來源／標籤</label><input id="f_tag" placeholder="出任務／朋友介紹／蝦皮"></div>
+<div><label>狀態</label><select id="f_status">
+<option value="lead">潛在客戶</option><option value="talking">洽談中</option>
+<option value="won">已成交</option><option value="hold">暫緩</option></select></div>
+<div><label>下次跟進日</label><input id="f_follow" type="date"></div>
+</div>
+<div style="margin-top:10px"><label>備註</label><textarea id="f_note" placeholder="需求、報價、注意事項"></textarea></div>
+<div style="margin-top:10px;display:flex;gap:8px">
+<button class="btn primary" id="f_save">儲存</button>
+<button class="btn" id="f_cancel">取消</button>
+</div>
+</div>
+<div class="card">
+<div class="toolbar">
+<input type="search" id="search" placeholder="搜尋名稱／電話／標籤／備註">
+<select id="filter" style="max-width:150px">
+<option value="">全部狀態</option><option value="due">待跟進（今日＋逾期）</option>
+<option value="lead">潛在客戶</option><option value="talking">洽談中</option>
+<option value="won">已成交</option><option value="hold">暫緩</option>
+</select>
+</div>
+<div id="list"></div>
+</div>
+</div>
+<script>!function(){var t="crm-customers",e=function(t){return document.getElementById(t)};function n(t){return String(null==t?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function a(){localStorage.setItem(t,JSON.stringify(i))}function s(t){return(t<10?"0":"")+t}function o(){var t=new Date;return t.getFullYear()+"-"+s(t.getMonth()+1)+"-"+s(t.getDate())}var l={lead:"潛在客戶",talking:"洽談中",won:"已成交",hold:"暫緩"},i=function(){try{var e=localStorage.getItem(t);return e?JSON.parse(e):[]}catch(t){return[]}}(),r=null,u={};function c(t){if(!t.follow||"won"===t.status||"hold"===t.status)return 0;var e=o();return t.follow===e?1:t.follow<e?2:0}function d(t,e,n,a){return'<div class="tile'+(a?" warn":"")+'"><div class="label">'+t+'</div><div class="value">'+e+'</div><div class="sub muted" style="font-size:.72rem">'+n+"</div></div>"}function f(){var t,a,s;t=i.filter(function(t){return c(t)>0}).length,a=i.filter(function(t){return"talking"===t.status}).length,s=i.filter(function(t){return"won"===t.status}).length,e("tiles").innerHTML=d("總客戶",i.length,"",!1)+d("待跟進",t,"今日＋逾期",t>0)+d("洽談中",a,"",!1)+d("已成交",s,"",!1);var o=e("search").value.trim(),r=e("filter").value,f=i.filter(function(t){return!!function(t,e){return!e||(e=e.toLowerCase(),[t.name,t.phone,t.tag,t.note].some(function(t){return(t||"").toLowerCase().indexOf(e)>=0}))}(t,o)&&("due"===r?c(t)>0:!r||t.status===r)});f.sort(function(t,e){return c(e)-c(t)||(t.name||"").localeCompare(e.name||"")}),f.length?e("list").innerHTML=f.map(function(t){var e=c(t),a=2===e?"overdue":1===e?"due":"",s=t.follow&&"won"!==t.status&&"hold"!==t.status?'<span class="follow '+(2===e?"overdue":1===e?"due":"")+'">跟進 '+t.follow+(2===e?"（逾期）":1===e?"（今日）":"")+"</span>":"",o=(t.logs||[]).slice().reverse().map(function(t){return'<div class="logline"><span class="d">'+n(t.date)+"</span>"+n(t.summary)+"</div>"}).join("")||'<div class="muted" style="font-size:.8rem">尚無聯絡紀錄</div>';return'<div class="cust '+a+'" data-id="'+t.id+'"><div class="top"><span class="nm">'+n(t.name)+'</span><span class="st '+t.status+'">'+l[t.status]+"</span>"+s+'<span class="meta">'+(t.phone?"☎ "+n(t.phone):"")+(t.tag?"　＃"+n(t.tag):"")+'</span><button class="btn sm pushbtn toggle">明細</button></div>'+(t.note?'<div class="meta" style="margin-top:4px">'+n(t.note)+"</div>":"")+'<div class="detail'+(u[t.id]?" on":"")+'"><div style="font-size:.8rem;color:var(--muted);margin-bottom:4px">聯絡紀錄</div>'+o+'<div class="addlog"><input placeholder="今天聊了什麼…" class="loginput"><button class="btn sm addlogbtn">＋記一筆</button></div><div style="margin-top:8px;display:flex;gap:6px"><button class="btn sm editc">編輯</button><button class="btn sm donec">'+("won"===t.status?"標回洽談":"標成交")+'</button><button class="btn sm danger delc">刪除</button></div></div></div>'}).join(""):e("list").innerHTML='<div class="muted">'+(i.length?"沒有符合的客戶":"尚無客戶，按「示範資料」試玩或「＋新增客戶」開始")+"</div>"}function m(t){r=t?t.id:null,e("formCard").style.display="",e("formTitle").textContent=t?"編輯客戶":"新增客戶",e("f_name").value=t?t.name:"",e("f_phone").value=t&&t.phone||"",e("f_tag").value=t&&t.tag||"",e("f_status").value=t?t.status:"lead",e("f_follow").value=t&&t.follow||"",e("f_note").value=t&&t.note||"",e("formCard").scrollIntoView({behavior:"smooth",block:"nearest"})}e("list").addEventListener("click",function(t){var e=t.target.closest(".cust");if(e){var n=e.dataset.id,s=i.filter(function(t){return t.id===n})[0];if(s){if(t.target.classList.contains("toggle"))return u[n]=!u[n],void f();if(t.target.classList.contains("addlogbtn")){var l=e.querySelector(".loginput").value.trim();if(!l)return;return s.logs=s.logs||[],s.logs.push({date:o(),summary:l}),a(),u[n]=!0,void f()}if(t.target.classList.contains("editc"))m(s);else{if(t.target.classList.contains("donec"))return s.status="won"===s.status?"talking":"won",a(),void f();if(t.target.classList.contains("delc")){if(!confirm("刪除客戶「"+s.name+"」？聯絡紀錄一併刪除"))return;return i=i.filter(function(t){return t.id!==n}),a(),void f()}}}}}),e("list").addEventListener("keydown",function(t){"Enter"===t.key&&t.target.classList.contains("loginput")&&(t.preventDefault(),t.target.closest(".cust").querySelector(".addlogbtn").click())}),e("newC").addEventListener("click",function(){m(null)}),e("f_cancel").addEventListener("click",function(){e("formCard").style.display="none",r=null}),e("f_save").addEventListener("click",function(){var t,n=e("f_name").value.trim();if(!n)return(t=e("fMsg")).textContent="請填客戶名稱",t.className="msg show err",void setTimeout(function(){t.className="msg"},2500);var s={name:n,phone:e("f_phone").value.trim(),tag:e("f_tag").value.trim(),status:e("f_status").value,follow:e("f_follow").value,note:e("f_note").value.trim()};if(r){var o=i.filter(function(t){return t.id===r})[0];Object.assign(o,s)}else s.id=Date.now().toString(36)+Math.random().toString(36).slice(2,6),s.logs=[],i.push(s);a(),e("formCard").style.display="none",r=null,f()}),e("search").addEventListener("input",f),e("filter").addEventListener("change",f),e("theme").addEventListener("click",function(){var t=document.documentElement;t.dataset.theme=getComputedStyle(t).colorScheme.indexOf("dark")>=0?"light":"dark"}),e("demo").addEventListener("click",function(){if(!i.length||confirm("載入示範資料會蓋掉現有資料？")){var t=new Date,e=function(e){var n=new Date(t);return n.setDate(n.getDate()+e),n.getFullYear()+"-"+s(n.getMonth()+1)+"-"+s(n.getDate())};i=[{id:"c1",name:"林老闆（甲蛋糕店）",phone:"0912345678",tag:"出任務",status:"talking",follow:e(0),note:"要報價單工具客製，加 LINE 通知",logs:[{date:e(-3),summary:"首次諮詢，說明需求"},{date:e(-1),summary:"寄了報價 $8000，等回覆"}]},{id:"c2",name:"陳小姐（網拍）",phone:"0922333444",tag:"蝦皮",status:"lead",follow:e(-2),note:"想要進銷存＋上架助手打包",logs:[{date:e(-5),summary:"私訊詢問是否能客製"}]},{id:"c3",name:"大同工程行",phone:"",tag:"朋友介紹",status:"won",follow:"",note:"四合一系統已交付，14 天保固中",logs:[{date:e(-10),summary:"需求訪談"},{date:e(-2),summary:"交付＋驗收簽收"}]},{id:"c4",name:"王先生",phone:"0933555777",tag:"出任務",status:"hold",follow:"",note:"預算不足暫緩，三個月後再聯絡",logs:[]}],a(),f()}}),f()}();</script>
+</body>
+</html>
