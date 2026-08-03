@@ -1,1 +1,780 @@
-const DASHBOARD_DATA={generated_from:"D:\\claude\\專案二\\data\\screener.db",snapshot_date:"2026-07-14",stats:{total:6468,eligible:1532,excluded:4936,attention:27,disposal:48,listed:898,otc:634},top:[{code:"4541",name:"晟田",market:"上櫃",close:70.6,volume_lots:36787,turnover_pct:54.38,themes:"軍工,航太扣件,無人機,半導體設備"},{code:"6182",name:"合晶",market:"上櫃",close:186.5,volume_lots:177978,turnover_pct:29.98,themes:""},{code:"2630",name:"亞航",market:"上市",close:62.3,volume_lots:41250,turnover_pct:19.7,themes:""},{code:"8039",name:"台虹",market:"上市",close:185.5,volume_lots:48874,turnover_pct:18.54,themes:""},{code:"1810",name:"和成",market:"上市",close:28.8,volume_lots:48839,turnover_pct:16.16,themes:""},{code:"2484",name:"希華",market:"上市",close:80.5,volume_lots:24301,turnover_pct:15.24,themes:""},{code:"2634",name:"漢翔",market:"上市",close:67.1,volume_lots:139359,turnover_pct:14.8,themes:""},{code:"6829",name:"千附精密",market:"上櫃",close:256.5,volume_lots:7913,turnover_pct:13.37,themes:""},{code:"5483",name:"中美晶",market:"上櫃",close:253,volume_lots:84426,turnover_pct:13.16,themes:""},{code:"4916",name:"事欣科",market:"上市",close:110,volume_lots:16101,turnover_pct:13.01,themes:""},{code:"6517",name:"保勝光學",market:"上櫃",close:71.8,volume_lots:3934,turnover_pct:12.86,themes:""},{code:"5371",name:"中光電",market:"上櫃",close:94.3,volume_lots:50098,turnover_pct:12.81,themes:""},{code:"6477",name:"安集",market:"上市",close:41.5,volume_lots:15427,turnover_pct:12.46,themes:""},{code:"3441",name:"聯一光",market:"上櫃",close:67.3,volume_lots:4955,turnover_pct:12.37,themes:""},{code:"5488",name:"松普",market:"上櫃",close:17.9,volume_lots:10257,turnover_pct:11.19,themes:""},{code:"6753",name:"龍德造船",market:"上市",close:157.5,volume_lots:12709,turnover_pct:10.84,themes:""},{code:"6834",name:"天二科技",market:"上市",close:118,volume_lots:9554,turnover_pct:10.8,themes:""},{code:"6538",name:"倉和",market:"上櫃",close:156,volume_lots:4065,turnover_pct:10.68,themes:""},{code:"2425",name:"承啟",market:"上市",close:44.25,volume_lots:10227,turnover_pct:10.6,themes:""},{code:"2375",name:"凱美",market:"上市",close:172,volume_lots:11247,turnover_pct:10.35,themes:""},{code:"2332",name:"友訊",market:"上市",close:24.05,volume_lots:60823,turnover_pct:10.1,themes:""},{code:"5425",name:"台半",market:"上櫃",close:107,volume_lots:24690,turnover_pct:9.37,themes:""},{code:"3026",name:"禾伸堂",market:"上市",close:815,volume_lots:15339,turnover_pct:9.25,themes:""},{code:"4931",name:"新盛力",market:"上櫃",close:221,volume_lots:5978,turnover_pct:9.11,themes:""},{code:"8150",name:"南茂",market:"上市",close:104,volume_lots:62368,turnover_pct:8.85,themes:""},{code:"6259",name:"百徽",market:"上櫃",close:37.5,volume_lots:2459,turnover_pct:8.76,themes:""},{code:"3624",name:"光頡",market:"上櫃",close:117.5,volume_lots:9897,turnover_pct:8.43,themes:""},{code:"4564",name:"元翎",market:"上市",close:21.6,volume_lots:18791,turnover_pct:8.07,themes:""},{code:"3374",name:"精材",market:"上櫃",close:365.5,volume_lots:21420,turnover_pct:7.89,themes:""},{code:"4989",name:"榮科",market:"上市",close:80,volume_lots:10748,turnover_pct:7.8,themes:""}],attention:[{code:"3131",market:"上櫃",info:"最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣380元(第十一款)"},{code:"31672",market:"上櫃",info:"最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達195.32%(第二款)"},{code:"4542",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達33.06%(第一款)當日週轉率達6.48%(第四款)當日本益比為287.82、股價淨值比為13.73且為其所屬產業類別股價淨值比之3.26倍、凱基證券公司當日買進該有價證券之成交金額達2.03億元，且占當日該有價證券之總成交金額26.96%(第六款)"},{code:"4556",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價漲幅達33.35%(第一款)最近三十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達203.12%(第二款)最近六十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達269.77%(第二款)最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達355.26%(第二款)當日週轉率達6.59%(第四款)"},{code:"4768",market:"上櫃",info:"最近六個營業日(自當日之前一個營業日起)之借券賣出成交量占總成交量比率達15.1%，當日之前一個營業日借券賣出成交量較最近六十個營業日(自當日之前一個營業日起)之日平均借券賣出成交量放大為5倍(第十二款)"},{code:"4991",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達31.13%(第一款)"},{code:"5289",market:"上櫃",info:"最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣200元(第十一款)"},{code:"5328",market:"上櫃",info:"最近六個營業日(含當日)之累積週轉率為101.2%，當日週轉率達13.73%(第十款)"},{code:"5351",market:"上櫃",info:"最近六個營業日(含當日)之累積週轉率為84.18%，當日週轉率達15.62%(第十款)"},{code:"5386",market:"上櫃",info:"最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣96元(第十一款)"},{code:"5475",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達27.62%且最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣48元(第一款)"},{code:"6016",market:"上櫃",info:"最近六個營業日(自當日之前一個營業日起)之借券賣出成交量占總成交量比率達11.93%，當日之前一個營業日借券賣出成交量較最近六十個營業日(自當日之前一個營業日起)之日平均借券賣出成交量放大為4倍(第十二款)"},{code:"6023",market:"上櫃",info:"最近六個營業日(含當日)之日平均成交量較最近六十個營業日日平均成交量放大為5.3倍，當日成交量較最近六十個營業日之日平均成交量放大為26.38倍(第九款)"},{code:"6138",market:"上櫃",info:"最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣107元(第十一款)"},{code:"6173",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達35.79%(第一款)當日週轉率達10.37%(第四款)"},{code:"6204",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達30.66%(第一款)"},{code:"6488",market:"上櫃",info:"當日本益比為93.46、股價淨值比為7.76且為其所屬產業類別股價淨值比之1.38倍、當日週轉率達5.22%、美商高盛亞證券公司當日買進該有價證券之成交金額達46.94億元，且占當日該有價證券之總成交金額12.61%、單一投資人當日買進該有價證券之成交金額達46.94億元，且占當日該有價證券之總成交金額12.61%(第六款)"},{code:"65152",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達31%(第一款)"},{code:"6683",market:"上櫃",info:"最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣260.99元(第十一款)"},{code:"6907",market:"上櫃",info:"當日本益比為82.30、股價淨值比為8.86且為其所屬產業類別股價淨值比之1.57倍、當日週轉率達7.63%、凱基證券公司當日買進該有價證券之成交金額達2.76億元，且占當日該有價證券之總成交金額27.47%(第六款)"},{code:"7402",market:"上櫃",info:"當日本益比為N/A、股價淨值比為7.8且為其所屬產業類別股價淨值比之3.07倍、當日週轉率達22.19%、元大證券公司當日賣出該有價證券之成交金額達3.67億元，且占當日該有價證券之總成交金額32.55%、單一投資人當日賣出該有價證券之成交金額達1.78億元，且占當日該有價證券之總成交金額15.81%(第六款)"},{code:"7714",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價漲幅達25.48%且最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣51元(第一款)"},{code:"8043",market:"上櫃",info:"最近六個營業日(自當日之前一個營業日起)之當日沖銷成交量占總成交量比率達73.18%，當日之前一個營業日當日沖銷成交量占總成交量達64.66%（第十三款)"},{code:"8096",market:"上櫃",info:"當日本益比為92.11、股價淨值比為8.12且為其所屬產業類別股價淨值比之2.7倍、當日週轉率達9.24%(第六款)"},{code:"8291",market:"上櫃",info:"最近六個營業日(含當日)累積之最後成交價跌幅達33.8%(第一款)"},{code:"8299",market:"上櫃",info:"最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣240元(第十一款)"},{code:"8421",market:"上櫃",info:"最近六個營業日(含當日)之日平均成交量較最近六十個營業日日平均成交量放大為5.24倍，當日成交量較最近六十個營業日之日平均成交量放大為16.64倍(第九款)"}],disposal:[{code:"059570",period_start:"2026-07-03",period_end:"2026-07-16",reason:"連續三次"},{code:"066762",period_start:"2026-07-07",period_end:"2026-07-20",reason:"連續三次"},{code:"1435",period_start:"2026-07-03",period_end:"2026-07-16",reason:"連續三次"},{code:"1447",period_start:"2026-07-06",period_end:"2026-07-17",reason:"連續三次"},{code:"1515",period_start:"2026-07-07",period_end:"2026-07-20",reason:"連續三次"},{code:"1617",period_start:"2026-07-06",period_end:"2026-07-17",reason:"連續三次"},{code:"1718",period_start:"2026-07-07",period_end:"2026-07-20",reason:"連續三次"},{code:"2303",period_start:"2026-07-02",period_end:"2026-07-15",reason:"最近十個營業日已有六次"},{code:"2466",period_start:"2026-07-08",period_end:"2026-07-21",reason:"連續三次"},{code:"3055",period_start:"2026-07-09",period_end:"2026-07-22",reason:"連續三次"},{code:"3055",period_start:"2026-07-06",period_end:"2026-07-17",reason:"連續三次"},{code:"3189",period_start:"2026-07-03",period_end:"2026-07-16",reason:"最近十個營業日已有六次"},{code:"4169",period_start:"2026-07-10",period_end:"2026-07-23",reason:"連續三次"},{code:"6226",period_start:"2026-07-03",period_end:"2026-07-16",reason:"連續三次"},{code:"7795",period_start:"2026-07-06",period_end:"2026-07-17",reason:"連續三次"},{code:"8021",period_start:"2026-07-03",period_end:"2026-07-16",reason:"最近十個營業日已有六次"},{code:"8033",period_start:"2026-07-03",period_end:"2026-07-16",reason:"最近十個營業日已有六次"},{code:"8261",period_start:"2026-07-09",period_end:"2026-07-24",reason:"連續三次及當日沖銷標準"},{code:"911608",period_start:"2026-07-06",period_end:"2026-07-17",reason:"最近三十個營業日已有十二次"},{code:"4542",period_start:"2026-07-15",period_end:"2026-07-28",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"45421",period_start:"2026-07-15",period_end:"2026-07-28",reason:"轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"},{code:"4556",period_start:"2026-07-15",period_end:"2026-07-28",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"8027",period_start:"2026-07-14",period_end:"2026-07-27",reason:"最近10個營業日內有6個營業日"},{code:"80273",period_start:"2026-07-14",period_end:"2026-07-27",reason:"轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"},{code:"61828",period_start:"2026-07-10",period_end:"2026-07-23",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"4707",period_start:"2026-07-09",period_end:"2026-07-22",reason:"最近10個營業日內有6個營業日"},{code:"6174",period_start:"2026-07-09",period_end:"2026-07-22",reason:"最近10個營業日內有6個營業日"},{code:"708915",period_start:"2026-07-09",period_end:"2026-07-22",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"61827",period_start:"2026-07-08",period_end:"2026-07-21",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"6617",period_start:"2026-07-08",period_end:"2026-07-21",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"61828",period_start:"2026-07-07",period_end:"2026-07-20",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"66722",period_start:"2026-07-07",period_end:"2026-07-20",reason:"最近10個營業日內有6個營業日"},{code:"3147",period_start:"2026-07-06",period_end:"2026-07-17",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"3230",period_start:"2026-07-06",period_end:"2026-07-17",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"6217",period_start:"2026-07-06",period_end:"2026-07-17",reason:"最近10個營業日內有6個營業日"},{code:"80212",period_start:"2026-07-03",period_end:"2026-07-16",reason:"轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"},{code:"3230",period_start:"2026-07-01",period_end:"2026-07-14",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"052974",period_start:"2026-07-15",period_end:"2026-07-28",reason:"連續三次"},{code:"2434",period_start:"2026-07-15",period_end:"2026-07-28",reason:"最近十個營業日已有六次"},{code:"6831",period_start:"2026-07-15",period_end:"2026-07-28",reason:"最近十個營業日已有六次"},{code:"2492",period_start:"2026-07-16",period_end:"2026-07-29",reason:"連續三次"},{code:"6173",period_start:"2026-07-17",period_end:"2026-07-30",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"6907",period_start:"2026-07-17",period_end:"2026-07-30",reason:"最近10個營業日內有6個營業日"},{code:"7714",period_start:"2026-07-17",period_end:"2026-07-30",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"},{code:"8096",period_start:"2026-07-16",period_end:"2026-07-29",reason:"連續5個營業日"},{code:"80962",period_start:"2026-07-16",period_end:"2026-07-29",reason:"轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"},{code:"80963",period_start:"2026-07-16",period_end:"2026-07-29",reason:"轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"},{code:"8291",period_start:"2026-07-16",period_end:"2026-07-29",reason:"因連續3個營業日達本中心作業要點第四條第一項第一款"}],themes:[{code:"4541",current:"軍工,航太扣件,無人機,半導體設備",past:"軍工航太（2025主力連續炒作、外資大買）",note:"航太/半導體雙引擎，亞洲供應鏈中心題材",analyzed_at:"2026-07-15"}]};
+// 由 export_data.py 產生，請勿手改
+const DASHBOARD_DATA = {
+ "source_note": "資料來源：臺灣證券交易所、證券櫃檯買賣中心公開資訊（官方 OpenAPI）",
+ "snapshot_date": "2026-08-03",
+ "stats": {
+  "total": 6173,
+  "eligible": 1625,
+  "excluded": 4548,
+  "attention": 23,
+  "disposal": 62,
+  "listed": 943,
+  "otc": 682
+ },
+ "top": [
+  {
+   "code": "B01",
+   "name": "示範公司甲1",
+   "market": "上櫃",
+   "close": 92.4,
+   "volume_lots": 33102,
+   "turnover_pct": 82.67,
+   "themes": "示範題材一,示範題材二"
+  },
+  {
+   "code": "B02",
+   "name": "示範公司乙2",
+   "market": "上櫃",
+   "close": 67.4,
+   "volume_lots": 39982,
+   "turnover_pct": 23.15,
+   "themes": "示範題材三"
+  },
+  {
+   "code": "B03",
+   "name": "示範公司丙3",
+   "market": "上櫃",
+   "close": 71.5,
+   "volume_lots": 5660,
+   "turnover_pct": 16.46,
+   "themes": "示範題材二,示範題材四"
+  },
+  {
+   "code": "A04",
+   "name": "示範公司丁4",
+   "market": "上市",
+   "close": 21.55,
+   "volume_lots": 14078,
+   "turnover_pct": 12.19,
+   "themes": "示範題材一"
+  },
+  {
+   "code": "A05",
+   "name": "示範公司戊5",
+   "market": "上市",
+   "close": 63.6,
+   "volume_lots": 19131,
+   "turnover_pct": 12.0,
+   "themes": "示範題材四,示範題材五"
+  },
+  {
+   "code": "B06",
+   "name": "示範公司己6",
+   "market": "上櫃",
+   "close": 180.0,
+   "volume_lots": 16291,
+   "turnover_pct": 11.04,
+   "themes": "示範題材一,示範題材二"
+  },
+  {
+   "code": "A07",
+   "name": "示範公司庚7",
+   "market": "上市",
+   "close": 48.3,
+   "volume_lots": 10094,
+   "turnover_pct": 10.46,
+   "themes": "示範題材三"
+  },
+  {
+   "code": "B08",
+   "name": "示範公司辛8",
+   "market": "上櫃",
+   "close": 55.8,
+   "volume_lots": 9271,
+   "turnover_pct": 9.44,
+   "themes": "示範題材二,示範題材四"
+  },
+  {
+   "code": "A09",
+   "name": "示範公司壬9",
+   "market": "上市",
+   "close": 171.0,
+   "volume_lots": 11019,
+   "turnover_pct": 9.27,
+   "themes": "示範題材一"
+  },
+  {
+   "code": "B10",
+   "name": "示範公司癸10",
+   "market": "上櫃",
+   "close": 86.8,
+   "volume_lots": 3195,
+   "turnover_pct": 9.2,
+   "themes": "示範題材四,示範題材五"
+  },
+  {
+   "code": "A11",
+   "name": "示範公司甲11",
+   "market": "上市",
+   "close": 38.0,
+   "volume_lots": 12863,
+   "turnover_pct": 9.1,
+   "themes": "示範題材一,示範題材二"
+  },
+  {
+   "code": "A12",
+   "name": "示範公司乙12",
+   "market": "上市",
+   "close": 22.2,
+   "volume_lots": 48686,
+   "turnover_pct": 8.09,
+   "themes": "示範題材三"
+  },
+  {
+   "code": "A13",
+   "name": "示範公司丙13",
+   "market": "上市",
+   "close": 48.1,
+   "volume_lots": 3658,
+   "turnover_pct": 8.08,
+   "themes": "示範題材二,示範題材四"
+  },
+  {
+   "code": "B14",
+   "name": "示範公司丁14",
+   "market": "上櫃",
+   "close": 61.9,
+   "volume_lots": 8144,
+   "turnover_pct": 7.46,
+   "themes": "示範題材一"
+  },
+  {
+   "code": "A15",
+   "name": "示範公司戊15",
+   "market": "上市",
+   "close": 190.5,
+   "volume_lots": 18356,
+   "turnover_pct": 6.96,
+   "themes": "示範題材四,示範題材五"
+  },
+  {
+   "code": "A16",
+   "name": "示範公司己16",
+   "market": "上市",
+   "close": 219.5,
+   "volume_lots": 8993,
+   "turnover_pct": 6.94,
+   "themes": "示範題材一,示範題材二"
+  },
+  {
+   "code": "A17",
+   "name": "示範公司庚17",
+   "market": "上市",
+   "close": 77.6,
+   "volume_lots": 48689,
+   "turnover_pct": 6.91,
+   "themes": "示範題材三"
+  },
+  {
+   "code": "B18",
+   "name": "示範公司辛18",
+   "market": "上櫃",
+   "close": 48.25,
+   "volume_lots": 7279,
+   "turnover_pct": 6.73,
+   "themes": "示範題材二,示範題材四"
+  },
+  {
+   "code": "B19",
+   "name": "示範公司壬19",
+   "market": "上櫃",
+   "close": 96.5,
+   "volume_lots": 6108,
+   "turnover_pct": 6.6,
+   "themes": "示範題材一"
+  },
+  {
+   "code": "A20",
+   "name": "示範公司癸20",
+   "market": "上市",
+   "close": 31.95,
+   "volume_lots": 13320,
+   "turnover_pct": 6.48,
+   "themes": "示範題材四,示範題材五"
+  },
+  {
+   "code": "B21",
+   "name": "示範公司甲21",
+   "market": "上櫃",
+   "close": 115.0,
+   "volume_lots": 9588,
+   "turnover_pct": 6.42,
+   "themes": "示範題材一,示範題材二"
+  },
+  {
+   "code": "A22",
+   "name": "示範公司乙22",
+   "market": "上市",
+   "close": 240.0,
+   "volume_lots": 5313,
+   "turnover_pct": 6.25,
+   "themes": "示範題材三"
+  },
+  {
+   "code": "A23",
+   "name": "示範公司丙23",
+   "market": "上市",
+   "close": 61.1,
+   "volume_lots": 8081,
+   "turnover_pct": 5.87,
+   "themes": "示範題材二,示範題材四"
+  },
+  {
+   "code": "A24",
+   "name": "示範公司丁24",
+   "market": "上市",
+   "close": 154.5,
+   "volume_lots": 19961,
+   "turnover_pct": 5.82,
+   "themes": "示範題材一"
+  },
+  {
+   "code": "B25",
+   "name": "示範公司戊25",
+   "market": "上櫃",
+   "close": 139.0,
+   "volume_lots": 4455,
+   "turnover_pct": 5.57,
+   "themes": "示範題材四,示範題材五"
+  },
+  {
+   "code": "A26",
+   "name": "示範公司己26",
+   "market": "上市",
+   "close": 409.0,
+   "volume_lots": 8049,
+   "turnover_pct": 5.53,
+   "themes": "示範題材一,示範題材二"
+  },
+  {
+   "code": "B27",
+   "name": "示範公司庚27",
+   "market": "上櫃",
+   "close": 135.5,
+   "volume_lots": 41237,
+   "turnover_pct": 5.53,
+   "themes": "示範題材三"
+  },
+  {
+   "code": "A28",
+   "name": "示範公司辛28",
+   "market": "上市",
+   "close": 75.3,
+   "volume_lots": 6082,
+   "turnover_pct": 5.33,
+   "themes": "示範題材二,示範題材四"
+  },
+  {
+   "code": "B29",
+   "name": "示範公司壬29",
+   "market": "上櫃",
+   "close": 35.4,
+   "volume_lots": 5126,
+   "turnover_pct": 5.33,
+   "themes": "示範題材一"
+  },
+  {
+   "code": "A30",
+   "name": "示範公司癸30",
+   "market": "上市",
+   "close": 49.75,
+   "volume_lots": 1891,
+   "turnover_pct": 5.11,
+   "themes": "示範題材四,示範題材五"
+  }
+ ],
+ "attention": [
+  {
+   "code": "A31",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A32",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A33",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A12",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A30",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A34",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A35",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A36",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B06",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B01",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A26",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A37",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B38",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A39",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B40",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B41",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B42",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B43",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A04",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B44",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B45",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B46",
+   "market": "上櫃",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A15",
+   "market": "上市",
+   "info": "示範：連續數日成交量與價格波動達交易所公告標準（示範文字，非實際公告）"
+  }
+ ],
+ "disposal": [
+  {
+   "code": "A47",
+   "period_start": "2026-07-23",
+   "period_end": "2026-08-05",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A48",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A49",
+   "period_start": "2026-07-21",
+   "period_end": "2026-08-03",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A35",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A50",
+   "period_start": "2026-07-24",
+   "period_end": "2026-08-06",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A51",
+   "period_start": "2026-07-23",
+   "period_end": "2026-08-05",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A52",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A53",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A54",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A55",
+   "period_start": "2026-07-24",
+   "period_end": "2026-08-06",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A56",
+   "period_start": "2026-07-24",
+   "period_end": "2026-08-06",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A57",
+   "period_start": "2026-07-24",
+   "period_end": "2026-08-10",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A58",
+   "period_start": "2026-07-24",
+   "period_end": "2026-08-10",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B43",
+   "period_start": "2026-07-24",
+   "period_end": "2026-08-10",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A59",
+   "period_start": "2026-07-23",
+   "period_end": "2026-08-05",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A60",
+   "period_start": "2026-07-23",
+   "period_end": "2026-08-05",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A61",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A62",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A63",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A64",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A65",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A66",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A67",
+   "period_start": "2026-07-22",
+   "period_end": "2026-08-04",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A56",
+   "period_start": "2026-07-21",
+   "period_end": "2026-08-03",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A68",
+   "period_start": "2026-07-29",
+   "period_end": "2026-08-11",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A69",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A70",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A71",
+   "period_start": "2026-07-28",
+   "period_end": "2026-08-10",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A72",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A73",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A74",
+   "period_start": "2026-07-27",
+   "period_end": "2026-08-07",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B43",
+   "period_start": "2026-07-29",
+   "period_end": "2026-08-11",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A75",
+   "period_start": "2026-07-29",
+   "period_end": "2026-08-11",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A59",
+   "period_start": "2026-07-28",
+   "period_end": "2026-08-10",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A53",
+   "period_start": "2026-07-28",
+   "period_end": "2026-08-10",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A76",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-12",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A77",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A78",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A79",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A80",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A53",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-12",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A72",
+   "period_start": "2026-07-30",
+   "period_end": "2026-08-12",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A55",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B41",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A59",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A81",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A53",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A82",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A36",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A50",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A37",
+   "period_start": "2026-07-31",
+   "period_end": "2026-08-13",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A62",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A57",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B43",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A83",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A84",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A85",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A35",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A39",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A86",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-14",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "A87",
+   "period_start": "2026-08-03",
+   "period_end": "2026-08-18",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  },
+  {
+   "code": "B42",
+   "period_start": "2026-08-04",
+   "period_end": "2026-08-17",
+   "reason": "示範：達處置標準（示範文字，非實際公告）"
+  }
+ ],
+ "themes": [],
+ "is_demo": true,
+ "notice": "本頁為圖表呈現能力展示，個股代號、名稱與題材標籤均為**去識別化的示範資料**，非真實個股資訊，不構成任何投資建議或推薦。"
+};
