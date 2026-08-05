@@ -1,1 +1,164 @@
-<!DOCTYPE html><html lang="zh-Hant"><head><!--__demo_shim_applied__--><script>(function(){var _m=new Map();var s={getItem:function(k){return _m.has(k)?_m.get(k):null;},setItem:function(k,v){_m.set(k,String(v));},removeItem:function(k){_m.delete(k);},clear:function(){_m.clear();},key:function(i){return Array.from(_m.keys())[i]||null;}};Object.defineProperty(s,'length',{get:function(){return _m.size;}});try{Object.defineProperty(window,'localStorage',{value:s,configurable:true});}catch(e){window.localStorage=s;}})();</script><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>多階簽核系統 Demo</title><style>:root{color-scheme:light;--surface-1:#fcfcfb;--page:#f9f9f7;--text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--grid:#e1e0d9;--baseline:#c3c2b7;--border:rgba(11,11,11,0.10);--accent:#2a78d6;--accent-soft:#eef3fb;--good:#0ca30c;--good-bg:#e8f6e8;--good-text:#006300;--warn-bg:#fdf3e0;--warn-text:#8a5b00;--crit:#d03b3b;--crit-bg:#fbeaea;--crit-text:#a32e2e}@media (prefers-color-scheme:dark){:root:where(:not([data-theme=light])){color-scheme:dark;--surface-1:#1a1a19;--page:#0d0d0d;--text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#898781;--grid:#2c2c2a;--baseline:#383835;--border:rgba(255,255,255,0.10);--accent:#3987e5;--accent-soft:#1f2a3a;--good-bg:#14290f;--good-text:#0ca30c;--warn-bg:#33270e;--warn-text:#e0a93f;--crit-bg:#351b1b;--crit-text:#e66767}}:root[data-theme=dark]{color-scheme:dark;--surface-1:#1a1a19;--page:#0d0d0d;--text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#898781;--grid:#2c2c2a;--baseline:#383835;--border:rgba(255,255,255,0.10);--accent:#3987e5;--accent-soft:#1f2a3a;--good-bg:#14290f;--good-text:#0ca30c;--warn-bg:#33270e;--warn-text:#e0a93f;--crit-bg:#351b1b;--crit-text:#e66767}*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui,-apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;background:var(--page);color:var(--text-primary);padding:24px;line-height:1.55}.wrap{max-width:1080px;margin:0 auto}header{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:18px}h1{font-size:1.3rem;font-weight:700}header .spacer{flex:1}.btn{font-size:.85rem;border:1px solid var(--border);border-radius:8px;background:var(--surface-1);color:var(--text-primary);padding:6px 14px;cursor:pointer}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}.btn.approve{background:var(--good);border-color:var(--good);color:#fff;font-weight:600}.btn.reject{background:var(--crit);border-color:var(--crit);color:#fff;font-weight:600}.btn.ghost{color:var(--text-secondary)}.role-bar{display:flex;gap:6px;background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:4px}.role-bar button{border:0;background:0 0;color:var(--text-secondary);font-size:.85rem;padding:5px 14px;border-radius:7px;cursor:pointer}.role-bar button.active{background:var(--accent);color:#fff;font-weight:600}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}.tile{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:12px 16px}.tile .label{font-size:.76rem;color:var(--text-muted)}.tile .value{font-size:1.5rem;font-weight:700}.card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:18px}.card h2{font-size:1rem;font-weight:700;margin-bottom:10px}form .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}label{display:block;font-size:.78rem;color:var(--text-secondary);margin-bottom:4px}input,select,textarea{width:100%;font:inherit;font-size:.88rem;color:var(--text-primary);background:var(--page);border:1px solid var(--baseline);border-radius:8px;padding:7px 10px}textarea{resize:vertical;min-height:56px}.hint{font-size:.75rem;color:var(--text-muted);margin-top:6px}table{border-collapse:collapse;width:100%;font-size:.85rem}td,th{padding:8px 10px;text-align:left;border-bottom:1px solid var(--grid);vertical-align:top}th{color:var(--text-muted);font-size:.75rem;font-weight:600;border-bottom:1px solid var(--baseline);white-space:nowrap}td.num{font-variant-numeric:tabular-nums;text-align:right}th.num{text-align:right}.status{display:inline-block;border-radius:6px;padding:1px 10px;font-size:.76rem;font-weight:600;white-space:nowrap}.status.s1{background:var(--warn-bg);color:var(--warn-text)}.status.s2{background:var(--accent-soft);color:var(--accent)}.status.ok{background:var(--good-bg);color:var(--good-text)}.status.no{background:var(--crit-bg);color:var(--crit-text)}.urgent{color:var(--crit-text);font-weight:700;font-size:.76rem}.actions{display:flex;gap:6px;flex-wrap:wrap}.toggle-log{background:0 0;border:0;color:var(--accent);font-size:.78rem;cursor:pointer;padding:0}.log{margin-top:8px;border-left:2px solid var(--baseline);padding-left:12px;display:none}.log.show{display:block}.log .step{font-size:.78rem;color:var(--text-secondary);padding:3px 0}.log .step b{color:var(--text-primary)}.log .step .t{color:var(--text-muted);margin-left:8px}.empty{color:var(--text-muted);font-size:.85rem;padding:14px 0}.flow-note{font-size:.78rem;color:var(--text-secondary);background:var(--accent-soft);border-radius:8px;padding:8px 12px;margin-bottom:14px}footer{font-size:.75rem;color:var(--text-muted)}.table-scroll{overflow-x:auto}</style></head><body><div style="background:#fff3cd;color:#664d03;font-size:13px;line-height:1.5;text-align:center;padding:8px 14px;border-bottom:1px solid #f0ad4e;font-family:system-ui,-apple-system,'Segoe UI','Microsoft JhengHei',sans-serif">🧪 試用版：資料僅暫存於本次瀏覽，重新整理頁面即清空，不會保存在您的裝置上。正式交付版本可為您永久保存資料。</div><div class="wrap"><header><h1>多階簽核系統 <span style="font-size:.8rem;color:var(--text-muted);font-weight:400">Demo</span></h1><span class="spacer"></span><div class="role-bar" id="roleBar"><button data-role="staff" class="active">申請人（小陳）</button> <button data-role="manager">部門主管（王主管）</button> <button data-role="director">經理（林經理）</button></div><button class="btn ghost" id="themeToggle" type="button">深淺色</button> <button class="btn ghost" id="resetBtn" type="button">重置示範資料</button></header><div class="flow-note">簽核規則：金額 <b>&lt; 10,000</b> → 主管核准即結案；金額 <b>≥ 10,000</b> → 主管核准後送經理核決。任一階駁回即退件，申請人可重新送審。</div><div class="tiles" id="tiles"></div><div class="card" id="formCard"><h2>新增申請</h2><form id="reqForm"><div class="grid"><div><label for="fType">申請類型</label> <select id="fType"><option>費用報支</option><option>請購單</option><option>差旅申請</option><option>用印申請</option></select></div><div><label for="fAmount">金額（元）</label> <input id="fAmount" type="number" min="1" step="1" required placeholder="例：8500"></div><div><label for="fUrgent">急件</label> <select id="fUrgent"><option value="">否</option><option value="1">是</option></select></div></div><label for="fDesc">事由說明</label> <textarea id="fDesc" required placeholder="請填寫申請事由、用途與必要說明"></textarea><div class="hint">送出後由部門主管審核；金額達 10,000 元將自動加簽經理。</div><div style="margin-top:10px"><button class="btn primary" type="submit">送出申請</button></div></form></div><div class="card"><h2 id="listTitle">申請清單</h2><div class="table-scroll"><table><thead><tr><th>單號</th><th>類型</th><th>申請人</th><th class="num">金額</th><th>事由</th><th>狀態</th><th>簽核動作</th></tr></thead><tbody id="tbody"></tbody></table></div><div class="empty" id="emptyMsg" style="display:none">目前沒有符合此檢視的申請單</div></div><footer>本頁為流程展示，試用資料重整即清空。正式版可依需求落地：Google Sheets／SQLite／SharePoint List；通知可串 Email 或 LINE 官方帳號 Messaging API（LINE 端有免費則數上限，超量計費）。</footer></div><script>!function(){const t="approval-demo-v1",e={staff:"申請人",manager:"部門主管",director:"經理"},a={staff:"小陳",manager:"王主管",director:"林經理"},n={pending_mgr:{text:"待主管審核",cls:"s1"},pending_dir:{text:"待經理核決",cls:"s2"},approved:{text:"已核准",cls:"ok"},rejected:{text:"已駁回",cls:"no"}};let s="staff",d=function(){try{const e=localStorage.getItem(t);if(e)return JSON.parse(e)}catch(t){}const e=r();return c(e),e}();function o(t){const e=new Date(Date.now()-6e4*(t||0)),a=t=>(t<10?"0":"")+t;return e.getFullYear()+"-"+a(e.getMonth()+1)+"-"+a(e.getDate())+" "+a(e.getHours())+":"+a(e.getMinutes())}function r(){return{seq:4,items:[{id:"A-0001",type:"費用報支",amount:3200,desc:"客戶拜訪高鐵票與計程車資",urgent:!1,applicant:"小陳",status:"approved",log:[{who:"小陳",act:"提出申請",t:o(2880)},{who:"王主管",act:"核准（小額結案）",t:o(2760)}]},{id:"A-0002",type:"請購單",amount:48e3,desc:"產線條碼掃描器 4 台汰換",urgent:!0,applicant:"小陳",status:"pending_dir",log:[{who:"小陳",act:"提出申請（急件）",t:o(1440)},{who:"王主管",act:"核准，金額達門檻送經理核決",t:o(1350)}]},{id:"A-0003",type:"差旅申請",amount:15600,desc:"台南廠支援設備驗收三天兩夜",urgent:!1,applicant:"小陳",status:"pending_mgr",log:[{who:"小陳",act:"提出申請",t:o(240)}]}]}}function c(e){localStorage.setItem(t,JSON.stringify(e||d))}const i=document.getElementById("tbody"),l=new Intl.NumberFormat("zh-TW");function u(){const t=t=>d.items.filter(e=>e.status===t).length,a="manager"===s?t("pending_mgr"):"director"===s?t("pending_dir"):null;document.getElementById("tiles").innerHTML=[["全部申請",d.items.length],["待主管審核",t("pending_mgr")],["待經理核決",t("pending_dir")],["已核准",t("approved")],["已駁回",t("rejected")]].map(([t,e])=>'<div class="tile"><div class="label">'+t+'</div><div class="value">'+e+"</div></div>").join("")+(null!==a?'<div class="tile" style="border-color:var(--accent)"><div class="label">待我簽核</div><div class="value" style="color:var(--accent)">'+a+"</div></div>":""),document.getElementById("formCard").style.display="staff"===s?"":"none",document.getElementById("listTitle").textContent="staff"===s?"我的申請":"待我簽核（"+e[s]+"）";const o="manager"===s?d.items.filter(t=>"pending_mgr"===t.status):"director"===s?d.items.filter(t=>"pending_dir"===t.status):d.items.slice();document.getElementById("emptyMsg").style.display=o.length?"none":"",i.innerHTML=o.map(t=>{const e=n[t.status];let a="";a="manager"===s&&"pending_mgr"===t.status?'<div class="actions"><button class="btn approve" data-act="approve" data-id="'+t.id+'">核准</button><button class="btn reject" data-act="reject" data-id="'+t.id+'">駁回</button></div>':"director"===s&&"pending_dir"===t.status?'<div class="actions"><button class="btn approve" data-act="approve" data-id="'+t.id+'">核決</button><button class="btn reject" data-act="reject" data-id="'+t.id+'">駁回</button></div>':"staff"===s&&"rejected"===t.status?'<button class="btn" data-act="resend" data-id="'+t.id+'">重新送審</button>':'<span style="color:var(--text-muted);font-size:.8rem">－</span>';const d=t.log.map(t=>'<div class="step"><b>'+g(t.who)+"</b>　"+g(t.act)+'<span class="t">'+g(t.t)+"</span></div>").join("");return"<tr><td><b>"+t.id+"</b>"+(t.urgent?'<div class="urgent">急件</div>':"")+"</td><td>"+t.type+"</td><td>"+g(t.applicant)+'</td><td class="num">'+l.format(t.amount)+"</td><td>"+g(t.desc)+'<div><button class="toggle-log" data-log="'+t.id+'">簽核紀錄（'+t.log.length+'）</button><div class="log" id="log-'+t.id+'">'+d+'</div></div></td><td><span class="status '+e.cls+'">'+e.text+"</span></td><td>"+a+"</td></tr>"}).join("")}function g(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}document.addEventListener("click",t=>{const e=t.target;if(e.dataset.log)return void document.getElementById("log-"+e.dataset.log).classList.toggle("show");const n=e.dataset.id;if(!n)return;const r=d.items.find(t=>t.id===n);if(!r)return;const i=a[s];if("approve"===e.dataset.act)"manager"===s?r.amount>=1e4?(r.status="pending_dir",r.log.push({who:i,act:"核准，金額達門檻送經理核決",t:o()})):(r.status="approved",r.log.push({who:i,act:"核准（小額結案）",t:o()})):"director"===s&&(r.status="approved",r.log.push({who:i,act:"核決通過",t:o()}));else if("reject"===e.dataset.act){const t=prompt("駁回原因（會寫入簽核紀錄）：","");if(null===t)return;r.status="rejected",r.log.push({who:i,act:"駁回"+(t?"："+t:""),t:o()})}else"resend"===e.dataset.act&&(r.status="pending_mgr",r.log.push({who:i,act:"修改後重新送出",t:o()}));c(),u()}),document.getElementById("reqForm").addEventListener("submit",t=>{t.preventDefault();const e=Number(document.getElementById("fAmount").value);if(!e||e<=0)return;d.seq+=1;const n="A-"+String(d.seq).padStart(4,"0"),s=!!document.getElementById("fUrgent").value;d.items.unshift({id:n,type:document.getElementById("fType").value,amount:e,desc:document.getElementById("fDesc").value.trim(),urgent:s,applicant:a.staff,status:"pending_mgr",log:[{who:a.staff,act:"提出申請"+(s?"（急件）":""),t:o()}]}),c(),t.target.reset(),u()}),document.getElementById("roleBar").addEventListener("click",t=>{t.target.dataset.role&&(s=t.target.dataset.role,document.querySelectorAll("#roleBar button").forEach(t=>t.classList.toggle("active",t.dataset.role===s)),u())}),document.getElementById("themeToggle").addEventListener("click",()=>{const t=document.documentElement,e=getComputedStyle(t).colorScheme.includes("dark");t.dataset.theme=e?"light":"dark"}),document.getElementById("resetBtn").addEventListener("click",()=>{confirm("清除目前資料並還原示範資料？")&&(d=r(),c(),u())}),u()}()</script></body></html>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head><!--__demo_shim_applied__--><script>(function(){var _m=new Map();var s={getItem:function(k){return _m.has(k)?_m.get(k):null;},setItem:function(k,v){_m.set(k,String(v));},removeItem:function(k){_m.delete(k);},clear:function(){_m.clear();},key:function(i){return Array.from(_m.keys())[i]||null;}};Object.defineProperty(s,'length',{get:function(){return _m.size;}});try{Object.defineProperty(window,'localStorage',{value:s,configurable:true});}catch(e){window.localStorage=s;}})();</script><script>(function(){var _s=new Map();var ss={getItem:function(k){return _s.has(k)?_s.get(k):null;},setItem:function(k,v){_s.set(k,String(v));},removeItem:function(k){_s.delete(k);},clear:function(){_s.clear();},key:function(i){var a=Array.from(_s.keys())[i];return a===undefined?null:a;}};Object.defineProperty(ss,'length',{get:function(){return _s.size;}});try{Object.defineProperty(window,'sessionStorage',{value:ss,configurable:true});}catch(e){}try{Object.defineProperty(window,'indexedDB',{value:undefined,configurable:true});}catch(e){}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>多階簽核系統 Demo</title>
+<style>
+:root {
+color-scheme: light;
+--surface-1: #fcfcfb;
+--page: #f9f9f7;
+--text-primary: #0b0b0b;
+--text-secondary: #52514e;
+--text-muted: #898781;
+--grid: #e1e0d9;
+--baseline: #c3c2b7;
+--border: rgba(11,11,11,0.10);
+--accent: #2a78d6;
+--accent-soft: #eef3fb;
+--good: #0ca30c;      --good-bg: #e8f6e8;  --good-text: #006300;
+--warn-bg: #fdf3e0;   --warn-text: #8a5b00;
+--crit: #d03b3b;      --crit-bg: #fbeaea;  --crit-text: #a32e2e;
+}
+@media (prefers-color-scheme: dark) {
+:root:where(:not([data-theme="light"])) {
+color-scheme: dark;
+--surface-1: #1a1a19; --page: #0d0d0d;
+--text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
+--grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+--accent: #3987e5; --accent-soft: #1f2a3a;
+--good-bg: #14290f; --good-text: #0ca30c;
+--warn-bg: #33270e; --warn-text: #e0a93f;
+--crit-bg: #351b1b; --crit-text: #e66767;
+}
+}
+:root[data-theme="dark"] {
+color-scheme: dark;
+--surface-1: #1a1a19; --page: #0d0d0d;
+--text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
+--grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+--accent: #3987e5; --accent-soft: #1f2a3a;
+--good-bg: #14290f; --good-text: #0ca30c;
+--warn-bg: #33270e; --warn-text: #e0a93f;
+--crit-bg: #351b1b; --crit-text: #e66767;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: system-ui, -apple-system, "Segoe UI", "Microsoft JhengHei", sans-serif;
+background: var(--page); color: var(--text-primary); padding: 24px; line-height: 1.55;
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 18px; }
+h1 { font-size: 1.3rem; font-weight: 700; }
+header .spacer { flex: 1; }
+.btn {
+font-size: .85rem; border: 1px solid var(--border); border-radius: 8px;
+background: var(--surface-1); color: var(--text-primary);
+padding: 6px 14px; cursor: pointer;
+}
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.btn.approve { background: var(--good); border-color: var(--good); color: #fff; font-weight: 600; }
+.btn.reject { background: var(--crit); border-color: var(--crit); color: #fff; font-weight: 600; }
+.btn.ghost { color: var(--text-secondary); }
+.role-bar {
+display: flex; gap: 6px; background: var(--surface-1); border: 1px solid var(--border);
+border-radius: 10px; padding: 4px;
+}
+.role-bar button {
+border: 0; background: transparent; color: var(--text-secondary);
+font-size: .85rem; padding: 5px 14px; border-radius: 7px; cursor: pointer;
+}
+.role-bar button.active { background: var(--accent); color: #fff; font-weight: 600; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; }
+.tile .label { font-size: .76rem; color: var(--text-muted); }
+.tile .value { font-size: 1.5rem; font-weight: 700; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 18px; }
+.card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+form .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
+label { display: block; font-size: .78rem; color: var(--text-secondary); margin-bottom: 4px; }
+input, select, textarea {
+width: 100%; font: inherit; font-size: .88rem; color: var(--text-primary);
+background: var(--page); border: 1px solid var(--baseline); border-radius: 8px; padding: 7px 10px;
+}
+textarea { resize: vertical; min-height: 56px; }
+.hint { font-size: .75rem; color: var(--text-muted); margin-top: 6px; }
+table { border-collapse: collapse; width: 100%; font-size: .85rem; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th { color: var(--text-muted); font-size: .75rem; font-weight: 600; border-bottom: 1px solid var(--baseline); white-space: nowrap; }
+td.num { font-variant-numeric: tabular-nums; text-align: right; }
+th.num { text-align: right; }
+.status { display: inline-block; border-radius: 6px; padding: 1px 10px; font-size: .76rem; font-weight: 600; white-space: nowrap; }
+.status.s1 { background: var(--warn-bg); color: var(--warn-text); }
+.status.s2 { background: var(--accent-soft); color: var(--accent); }
+.status.ok { background: var(--good-bg); color: var(--good-text); }
+.status.no { background: var(--crit-bg); color: var(--crit-text); }
+.urgent { color: var(--crit-text); font-weight: 700; font-size: .76rem; }
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.toggle-log { background: none; border: 0; color: var(--accent); font-size: .78rem; cursor: pointer; padding: 0; }
+.log { margin-top: 8px; border-left: 2px solid var(--baseline); padding-left: 12px; display: none; }
+.log.show { display: block; }
+.log .step { font-size: .78rem; color: var(--text-secondary); padding: 3px 0; }
+.log .step b { color: var(--text-primary); }
+.log .step .t { color: var(--text-muted); margin-left: 8px; }
+.empty { color: var(--text-muted); font-size: .85rem; padding: 14px 0; }
+.flow-note {
+font-size: .78rem; color: var(--text-secondary); background: var(--accent-soft);
+border-radius: 8px; padding: 8px 12px; margin-bottom: 14px;
+}
+footer { font-size: .75rem; color: var(--text-muted); }
+.table-scroll { overflow-x: auto; }
+</style>
+</head>
+<body><div style="background:#fff3cd;color:#664d03;font-size:13px;line-height:1.5;text-align:center;padding:8px 14px;border-bottom:1px solid #f0ad4e;font-family:system-ui,-apple-system,'Segoe UI','Microsoft JhengHei',sans-serif">🧪 試用版：資料僅暫存於本次瀏覽，重新整理頁面即清空，不會保存在您的裝置上。正式交付版本可為您永久保存資料。</div>
+<div class="wrap">
+<header>
+<h1>多階簽核系統 <span style="font-size:.8rem;color:var(--text-muted);font-weight:400">Demo</span></h1>
+<span class="spacer"></span>
+<div class="role-bar" id="roleBar">
+<button data-role="staff" class="active">申請人（小陳）</button>
+<button data-role="manager">部門主管（王主管）</button>
+<button data-role="director">經理（林經理）</button>
+</div>
+<button class="btn ghost" id="themeToggle" type="button">深淺色</button>
+<button class="btn ghost" id="resetBtn" type="button">重置示範資料</button>
+</header>
+<div class="flow-note">
+簽核規則：金額 <b>&lt; 10,000</b> → 主管核准即結案；金額 <b>≥ 10,000</b> → 主管核准後送經理核決。任一階駁回即退件，申請人可重新送審。
+</div>
+<div class="tiles" id="tiles"></div>
+<div class="card" id="formCard">
+<h2>新增申請</h2>
+<form id="reqForm">
+<div class="grid">
+<div><label for="fType">申請類型</label>
+<select id="fType"><option>費用報支</option><option>請購單</option><option>差旅申請</option><option>用印申請</option></select></div>
+<div><label for="fAmount">金額（元）</label>
+<input id="fAmount" type="number" min="1" step="1" required placeholder="例：8500"></div>
+<div><label for="fUrgent">急件</label>
+<select id="fUrgent"><option value="">否</option><option value="1">是</option></select></div>
+</div>
+<label for="fDesc">事由說明</label>
+<textarea id="fDesc" required placeholder="請填寫申請事由、用途與必要說明"></textarea>
+<div class="hint">送出後由部門主管審核；金額達 10,000 元將自動加簽經理。</div>
+<div style="margin-top:10px"><button class="btn primary" type="submit">送出申請</button></div>
+</form>
+</div>
+<div class="card">
+<h2 id="listTitle">申請清單</h2>
+<div class="table-scroll">
+<table>
+<thead><tr>
+<th>單號</th><th>類型</th><th>申請人</th><th class="num">金額</th><th>事由</th><th>狀態</th><th>簽核動作</th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<div class="empty" id="emptyMsg" style="display:none">目前沒有符合此檢視的申請單</div>
+</div>
+<footer>本頁為流程展示，試用資料重整即清空。正式版可依需求落地：Google Sheets／SQLite／SharePoint List；通知可串 Email 或 LINE 官方帳號 Messaging API（LINE 端有免費則數上限，超量計費）。</footer>
+</div>
+<script>!function(){const t="approval-demo-v1",e={staff:"申請人",manager:"部門主管",director:"經理"},a={staff:"小陳",manager:"王主管",director:"林經理"},n={pending_mgr:{text:"待主管審核",cls:"s1"},pending_dir:{text:"待經理核決",cls:"s2"},approved:{text:"已核准",cls:"ok"},rejected:{text:"已駁回",cls:"no"}};let s="staff",d=function(){let e=null;try{if(e=localStorage.getItem(t),e)return JSON.parse(e)}catch(a){try{e&&localStorage.setItem(t+"-corrupt-"+Date.now(),e)}catch(t){}setTimeout(()=>alert("偵測到本機資料損毀，已另存備份鍵並重新載入示範資料。"),0)}const a=r();return c(a),a}();function o(t){const e=new Date(Date.now()-6e4*(t||0)),a=t=>(t<10?"0":"")+t;return e.getFullYear()+"-"+a(e.getMonth()+1)+"-"+a(e.getDate())+" "+a(e.getHours())+":"+a(e.getMinutes())}function r(){return{seq:4,items:[{id:"A-0001",type:"費用報支",amount:3200,desc:"客戶拜訪高鐵票與計程車資",urgent:!1,applicant:"小陳",status:"approved",log:[{who:"小陳",act:"提出申請",t:o(2880)},{who:"王主管",act:"核准（小額結案）",t:o(2760)}]},{id:"A-0002",type:"請購單",amount:48e3,desc:"產線條碼掃描器 4 台汰換",urgent:!0,applicant:"小陳",status:"pending_dir",log:[{who:"小陳",act:"提出申請（急件）",t:o(1440)},{who:"王主管",act:"核准，金額達門檻送經理核決",t:o(1350)}]},{id:"A-0003",type:"差旅申請",amount:15600,desc:"台南廠支援設備驗收三天兩夜",urgent:!1,applicant:"小陳",status:"pending_mgr",log:[{who:"小陳",act:"提出申請",t:o(240)}]}]}}function c(e){localStorage.setItem(t,JSON.stringify(e||d))}const l=document.getElementById("tbody"),i=new Intl.NumberFormat("zh-TW");function u(){const t=t=>d.items.filter(e=>e.status===t).length,a="manager"===s?t("pending_mgr"):"director"===s?t("pending_dir"):null;document.getElementById("tiles").innerHTML=[["全部申請",d.items.length],["待主管審核",t("pending_mgr")],["待經理核決",t("pending_dir")],["已核准",t("approved")],["已駁回",t("rejected")]].map(([t,e])=>'<div class="tile"><div class="label">'+t+'</div><div class="value">'+e+"</div></div>").join("")+(null!==a?'<div class="tile" style="border-color:var(--accent)"><div class="label">待我簽核</div><div class="value" style="color:var(--accent)">'+a+"</div></div>":""),document.getElementById("formCard").style.display="staff"===s?"":"none",document.getElementById("listTitle").textContent="staff"===s?"我的申請":"待我簽核（"+e[s]+"）";const o="manager"===s?d.items.filter(t=>"pending_mgr"===t.status):"director"===s?d.items.filter(t=>"pending_dir"===t.status):d.items.slice();document.getElementById("emptyMsg").style.display=o.length?"none":"",l.innerHTML=o.map(t=>{const e=n[t.status];let a="";a="manager"===s&&"pending_mgr"===t.status?'<div class="actions"><button class="btn approve" data-act="approve" data-id="'+t.id+'">核准</button><button class="btn reject" data-act="reject" data-id="'+t.id+'">駁回</button></div>':"director"===s&&"pending_dir"===t.status?'<div class="actions"><button class="btn approve" data-act="approve" data-id="'+t.id+'">核決</button><button class="btn reject" data-act="reject" data-id="'+t.id+'">駁回</button></div>':"staff"===s&&"rejected"===t.status?'<button class="btn" data-act="resend" data-id="'+t.id+'">重新送審</button>':'<span style="color:var(--text-muted);font-size:.8rem">－</span>';const d=t.log.map(t=>'<div class="step"><b>'+g(t.who)+"</b>　"+g(t.act)+'<span class="t">'+g(t.t)+"</span></div>").join("");return"<tr><td><b>"+t.id+"</b>"+(t.urgent?'<div class="urgent">急件</div>':"")+"</td><td>"+t.type+"</td><td>"+g(t.applicant)+'</td><td class="num">'+i.format(t.amount)+"</td><td>"+g(t.desc)+'<div><button class="toggle-log" data-log="'+t.id+'">簽核紀錄（'+t.log.length+'）</button><div class="log" id="log-'+t.id+'">'+d+'</div></div></td><td><span class="status '+e.cls+'">'+e.text+"</span></td><td>"+a+"</td></tr>"}).join("")}function g(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}document.addEventListener("click",t=>{const e=t.target;if(e.dataset.log)return void document.getElementById("log-"+e.dataset.log).classList.toggle("show");const n=e.dataset.id;if(!n)return;const r=d.items.find(t=>t.id===n);if(!r)return;const l=a[s];if("approve"===e.dataset.act)"manager"===s?r.amount>=1e4?(r.status="pending_dir",r.log.push({who:l,act:"核准，金額達門檻送經理核決",t:o()})):(r.status="approved",r.log.push({who:l,act:"核准（小額結案）",t:o()})):"director"===s&&(r.status="approved",r.log.push({who:l,act:"核決通過",t:o()}));else if("reject"===e.dataset.act){const t=prompt("駁回原因（會寫入簽核紀錄）：","");if(null===t)return;r.status="rejected",r.log.push({who:l,act:"駁回"+(t?"："+t:""),t:o()})}else"resend"===e.dataset.act&&(r.status="pending_mgr",r.log.push({who:l,act:"修改後重新送出",t:o()}));c(),u()}),document.getElementById("reqForm").addEventListener("submit",t=>{t.preventDefault();const e=Number(document.getElementById("fAmount").value);if(!e||e<=0)return;d.seq+=1;const n="A-"+String(d.seq).padStart(4,"0"),s=!!document.getElementById("fUrgent").value;d.items.unshift({id:n,type:document.getElementById("fType").value,amount:e,desc:document.getElementById("fDesc").value.trim(),urgent:s,applicant:a.staff,status:"pending_mgr",log:[{who:a.staff,act:"提出申請"+(s?"（急件）":""),t:o()}]}),c(),t.target.reset(),u()}),document.getElementById("roleBar").addEventListener("click",t=>{t.target.dataset.role&&(s=t.target.dataset.role,document.querySelectorAll("#roleBar button").forEach(t=>t.classList.toggle("active",t.dataset.role===s)),u())}),document.getElementById("themeToggle").addEventListener("click",()=>{const t=document.documentElement,e=getComputedStyle(t).colorScheme.includes("dark");t.dataset.theme=e?"light":"dark"}),document.getElementById("resetBtn").addEventListener("click",()=>{confirm("清除目前資料並還原示範資料？")&&(d=r(),c(),u())}),u()}();</script>
+</body>
+</html>

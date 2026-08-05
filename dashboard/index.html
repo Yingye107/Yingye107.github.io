@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'">
 <title>營運儀表板｜小商家數字一眼看懂</title>
 <style>
@@ -50,6 +51,7 @@ h1{font-size:1.35rem;margin:0}
 border-radius:6px;padding:5px 11px;font-size:.82rem;cursor:pointer;font-family:inherit}
 .btn:hover{color:var(--text-primary)}
 .lead{color:var(--text-secondary);font-size:.88rem;margin:2px 0 18px}
+
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:22px}
 .tile{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;padding:13px 15px}
 .tile .label{font-size:.78rem;color:var(--text-muted)}
@@ -59,16 +61,19 @@ padding:1px 7px;border-radius:20px}
 .up{background:var(--good-bg);color:var(--good-text)}
 .down{background:var(--crit-bg);color:var(--crit-text)}
 .flat{background:var(--warn-bg);color:var(--warn-text)}
+
 .card{background:var(--surface-1);border:1px solid var(--border);border-radius:10px;
 padding:15px 17px;margin-bottom:16px}
 .card h2{font-size:.95rem;margin:0 0 3px}
 .card .sub{font-size:.78rem;color:var(--text-muted);margin-bottom:13px}
 .cols{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
 @media(max-width:760px){.cols{grid-template-columns:1fr}}
+
 svg{display:block;width:100%;height:auto;overflow:visible}
 .axis{font-size:10px;fill:var(--text-muted)}
 .gl{stroke:var(--grid);stroke-width:1}
 .bl{stroke:var(--baseline);stroke-width:1}
+
 table{width:100%;border-collapse:collapse;font-size:.85rem}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--border)}
 th{font-size:.76rem;color:var(--text-muted);font-weight:600}
@@ -78,8 +83,10 @@ tbody tr:last-child td{border-bottom:0}
 .p-crit{background:var(--crit-bg);color:var(--crit-text)}
 .p-warn{background:var(--warn-bg);color:var(--warn-text)}
 .p-ok{background:var(--good-bg);color:var(--good-text)}
+
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--text-secondary);margin-top:9px}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+
 .notice{font-size:.82rem;line-height:1.65;margin:6px 0 20px;padding:10px 13px;border-radius:8px;
 background:var(--warn-bg);color:var(--warn-text);border:1px solid var(--baseline)}
 footer{margin-top:26px;padding-top:15px;border-top:1px solid var(--border);
@@ -89,6 +96,7 @@ footer strong{color:var(--text-secondary)}
 </head>
 <body>
 <div class="wrap">
+
 <header>
 <h1>營運儀表板</h1>
 <span class="period" id="period"></span>
@@ -96,8 +104,11 @@ footer strong{color:var(--text-secondary)}
 <button class="btn" id="theme">深淺色</button>
 </header>
 <div class="lead">把每天記的流水帳，變成一眼看得懂的經營狀況——這個月賺多少、什麼好賣、哪些該補貨。</div>
+
 <div class="notice" id="notice"></div>
+
 <div class="tiles" id="tiles"></div>
+
 <div class="cols">
 <div class="card">
 <h2>每月營收與毛利</h2>
@@ -108,6 +119,7 @@ footer strong{color:var(--text-secondary)}
 <span><i style="background:var(--s3)"></i>毛利率</span>
 </div>
 </div>
+
 <div class="card">
 <h2>通路占比</h2>
 <div class="sub">本月營收來自哪裡</div>
@@ -115,12 +127,14 @@ footer strong{color:var(--text-secondary)}
 <div class="legend" id="donutLegend"></div>
 </div>
 </div>
+
 <div class="cols">
 <div class="card">
 <h2>熱銷商品 Top 8</h2>
 <div class="sub">本月銷售金額排序；毛利率偏低的品項已標色</div>
 <svg id="topItems" viewBox="0 0 720 300" role="img" aria-label="熱銷商品排行"></svg>
 </div>
+
 <div class="card">
 <h2>該補貨了</h2>
 <div class="sub">庫存低於安全水位的品項</div>
@@ -130,6 +144,7 @@ footer strong{color:var(--text-secondary)}
 </table>
 </div>
 </div>
+
 <div class="card">
 <h2>最近訂單</h2>
 <div class="sub">最新 8 筆</div>
@@ -138,18 +153,46 @@ footer strong{color:var(--text-secondary)}
 <tbody id="orders"></tbody>
 </table>
 </div>
+
 <footer id="foot"></footer>
 </div>
+
 <script src="data.js"></script>
 <script>
 (function () {
+/* 錯誤呈現：data.js 是「交付後由客戶自己替換」的檔案，等同不可信輸入。
+解析或欄位有問題時必須**明確講出來**，不能讓畫面看起來像「這期間沒有資料」。
+（QA 2026-08-04 A3：缺一個欄位就在 D.kpi.map 中止，整頁只剩標題、零錯誤訊息。） */
+var hasFatal = false;
+function fatal(title, detail) {
+hasFatal = true;
+var box = document.getElementById("notice");
+box.style.display = "block";
+box.style.background = "var(--crit-bg)";
+box.style.color = "var(--crit-text)";
+box.textContent = "⚠ " + title + "　" + detail;
+var t = document.getElementById("tiles");
+if (t) t.innerHTML = '<div class="tile"><div class="label">無法顯示</div>' +
+'<div class="val" style="font-size:.95rem">請見上方訊息</div></div>';
+}
+
 var D = typeof BIZ_DATA !== "undefined" ? BIZ_DATA : null;
 if (!D) {
-document.getElementById("tiles").innerHTML =
-'<div class="tile"><div class="label">找不到 data.js</div>' +
-'<div class="val" style="font-size:.95rem">請確認 data.js 與本檔放在同一資料夾</div></div>';
+fatal("找不到資料檔（data.js）。",
+"請確認 data.js 與本檔放在同一個資料夾，且檔案開頭是 const BIZ_DATA = {...}。");
 return;
 }
+
+/* 資料契約檢查：把缺漏一次講完，而不是讓第一個缺的欄位讓整支腳本中止。
+陣列型欄位缺少時補空陣列讓其餘區塊仍能顯示——半張儀表板比一片空白有用。 */
+var ARRAY_FIELDS = ["kpi", "months", "channels", "topItems", "lowStock", "orders"];
+var missing = ARRAY_FIELDS.filter(function (k) { return !Array.isArray(D[k]); });
+if (missing.length) {
+fatal("資料檔缺少必要欄位：" + missing.join("、") + "。",
+"這些欄位必須是陣列（沒有資料時給空陣列 []）。其餘區塊仍會嘗試顯示。");
+ARRAY_FIELDS.forEach(function (k) { if (!Array.isArray(D[k])) D[k] = []; });
+}
+if (typeof D.lowMarginThreshold !== "number") D.lowMarginThreshold = 25;
 var nf = new Intl.NumberFormat("zh-TW");
 var money = function (n) { return "$" + nf.format(Math.round(n)); };
 var pct = function (n) { return (Math.round(n * 10) / 10) + "%"; };
@@ -160,10 +203,29 @@ return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c
 };
 var SER = ["--s1", "--s2", "--s3", "--s4", "--s5"];
 var cv = function (name) { return "var(" + name + ")"; };
+/* 任何進到座標計算的值都先過這裡：非數字或 NaN 一律當 0，
+否則 NaN 會流進 SVG 的 d／width／height 讓圖形整個消失。 */
+var num = function (v) { var n = Number(v); return isFinite(n) ? n : 0; };
+/* 圖表區沒有資料時的統一呈現——比畫一張空座標軸誠實 */
+var emptyNote = function (w, h, msg) {
+return '<text x="' + (w / 2) + '" y="' + (h / 2) +
+'" text-anchor="middle" font-size="13" fill="var(--text-muted)">' + esc(msg) + "</text>";
+};
+
 document.getElementById("period").textContent = D.period;
+/* ⚠ 不可覆蓋 fatal() 已經寫進去的錯誤訊息——兩者共用同一個 #notice。
+2026-08-04 初版就是漏了 hasFatal 判斷：fatal() 設好 display:block 之後，
+這一行的 else 分支又把它設回 none，錯誤訊息內容在、但高度 0、使用者完全看不到。 */
+if (!hasFatal) {
 if (D.notice) document.getElementById("notice").textContent = "ⓘ " + D.notice;
 else document.getElementById("notice").style.display = "none";
+}
+/* ⚠ 這裡刻意用 innerHTML——footer 需要 <br> 與 <strong> 排版，是唯一允許 HTML 的欄位。
+其餘欄位（KPI 標籤、月份、通路、商品、訂單）一律走 esc() 跳脫，實測 XSS payload 皆被擋。
+**交付給客戶後若把 footer 接上任何外部來源的內容，這裡就是 XSS 缺口**——
+它只能放你自己寫死的靜態文字。（QA 2026-08-04 B1） */
 document.getElementById("foot").innerHTML = D.footer || "";
+
 /* 深淺色 */
 document.getElementById("theme").onclick = function () {
 var r = document.documentElement;
@@ -172,23 +234,37 @@ var dark = (r.dataset.theme || "") === "dark" ||
 r.dataset.theme = dark ? "light" : "dark";
 render();
 };
+
 /* KPI 磚 */
 function tiles() {
+if (!D.kpi.length) {
+document.getElementById("tiles").innerHTML =
+'<div class="tile"><div class="label">本期尚無彙總數字</div></div>';
+return;
+}
 document.getElementById("tiles").innerHTML = D.kpi.map(function (k) {
-var cls = k.delta > 0 ? "up" : (k.delta < 0 ? "down" : "flat");
-var arrow = k.delta > 0 ? "▲" : (k.delta < 0 ? "▼" : "—");
-var d = k.delta === 0 ? "持平" : arrow + " " + Math.abs(k.delta) + "%";
+/* delta 也要過 num()：交付後客戶的資料可能給字串或缺值，
+Math.abs("x") 會是 NaN，畫面直接出現「NaN%」。（QA 2026-08-04 A2 補漏） */
+var dv = num(k.delta);
+var cls = dv > 0 ? "up" : (dv < 0 ? "down" : "flat");
+var arrow = dv > 0 ? "▲" : (dv < 0 ? "▼" : "—");
+var d = dv === 0 ? "持平" : arrow + " " + Math.abs(dv) + "%";
 return '<div class="tile"><div class="label">' + esc(k.label) + '</div>' +
 '<div class="val">' + esc(k.value) + '</div>' +
 '<span class="delta ' + cls + '">' + d + ' 較上月</span></div>';
 }).join("");
 }
+
 /* 營收長條 + 毛利率折線 */
 function trend() {
 var W = 720, H = 260, PL = 52, PR = 42, PT = 14, PB = 30;
 var iw = W - PL - PR, ih = H - PT - PB;
 var m = D.months, n = m.length;
-var maxRev = Math.max.apply(null, m.map(function (x) { return x.revenue; })) * 1.12;
+if (!n) { document.getElementById("trend").innerHTML = emptyNote(W, H, "這段期間沒有營收資料"); return; }
+/* 防除以零：新店首月、季節性歇業都會讓整段營收為 0。
+不防的話 ih*(0/0) → NaN 會直接寫進 SVG 的 height，圖表破掉。（QA 2026-08-04 A2） */
+var maxRev = Math.max.apply(null, m.map(function (x) { return num(x.revenue); })) * 1.12;
+if (!(maxRev > 0)) maxRev = 1;
 var bw = iw / n * 0.6, gap = iw / n;
 var s = [];
 for (var g = 0; g <= 4; g++) {
@@ -198,21 +274,21 @@ s.push('<text class="axis" x="' + (PL - 7) + '" y="' + (y + 3) + '" text-anchor=
 nf.format(Math.round(maxRev * g / 4 / 1000)) + "k</text>");
 }
 m.forEach(function (x, i) {
-var h = ih * (x.revenue / maxRev);
+var h = ih * (num(x.revenue) / maxRev);
 var xx = PL + gap * i + (gap - bw) / 2;
 s.push('<rect x="' + xx + '" y="' + (PT + ih - h) + '" width="' + bw + '" height="' + h +
 '" rx="2" fill="' + cv(SER[0]) + '" opacity=".88"><title>' + esc(x.label) + "：" +
-money(x.revenue) + "</title></rect>");
+money(num(x.revenue)) + "</title></rect>");
 s.push('<text class="axis" x="' + (xx + bw / 2) + '" y="' + (H - PB + 15) +
 '" text-anchor="middle">' + esc(x.label) + "</text>");
 });
 var pts = m.map(function (x, i) {
-return (PL + gap * i + gap / 2) + "," + (PT + ih - ih * (x.margin / 60));
+return (PL + gap * i + gap / 2) + "," + (PT + ih - ih * (Math.min(Math.max(num(x.margin), 0), 60) / 60));
 }).join(" ");
 s.push('<polyline points="' + pts + '" fill="none" stroke="' + cv(SER[2]) + '" stroke-width="2"/>');
 m.forEach(function (x, i) {
-s.push('<circle cx="' + (PL + gap * i + gap / 2) + '" cy="' + (PT + ih - ih * (x.margin / 60)) +
-'" r="3" fill="' + cv(SER[2]) + '"><title>' + esc(x.label) + " 毛利率 " + pct(x.margin) + "</title></circle>");
+s.push('<circle cx="' + (PL + gap * i + gap / 2) + '" cy="' + (PT + ih - ih * (Math.min(Math.max(num(x.margin), 0), 60) / 60)) +
+'" r="3" fill="' + cv(SER[2]) + '"><title>' + esc(x.label) + " 毛利率 " + pct(num(x.margin)) + "</title></circle>");
 });
 for (var g2 = 0; g2 <= 3; g2++) {
 var yy = PT + ih - ih * (g2 * 20 / 60);
@@ -221,20 +297,28 @@ s.push('<text class="axis" x="' + (W - PR + 6) + '" y="' + (yy + 3) + '">' + (g2
 s.push('<line class="bl" x1="' + PL + '" y1="' + (PT + ih) + '" x2="' + (W - PR) + '" y2="' + (PT + ih) + '"/>');
 document.getElementById("trend").innerHTML = s.join("");
 }
+
 /* 通路甜甜圈 */
 function donut() {
 var cx = 110, cy = 110, r = 78, tw = 26;
-var total = D.channels.reduce(function (a, b) { return a + b.value; }, 0);
+var total = D.channels.reduce(function (a, b) { return a + num(b.value); }, 0);
+/* 防除以零：全通路皆 0 時 value/total = 0/0 = NaN，
+扇形的 path d 會整條變 NaN、圖例會顯示「NaN%」。（QA 2026-08-04 A2） */
+if (!D.channels.length || !(total > 0)) {
+document.getElementById("donut").innerHTML = emptyNote(220, 110, "本月尚無營收資料");
+document.getElementById("donutLegend").innerHTML = "";
+return;
+}
 var ang = -Math.PI / 2, s = [];
 D.channels.forEach(function (c, i) {
-var frac = c.value / total, end = ang + frac * Math.PI * 2;
+var frac = num(c.value) / total, end = ang + frac * Math.PI * 2;
 var large = frac > 0.5 ? 1 : 0;
 var p = function (a, rad) { return [cx + rad * Math.cos(a), cy + rad * Math.sin(a)]; };
 var o1 = p(ang, r), o2 = p(end, r), i2 = p(end, r - tw), i1 = p(ang, r - tw);
 s.push('<path d="M' + o1 + 'A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + o2 +
 'L' + i2 + 'A' + (r - tw) + " " + (r - tw) + " 0 " + large + " 0 " + i1 +
 'Z" fill="' + cv(SER[i % SER.length]) + '" opacity=".9"><title>' + esc(c.name) + "：" +
-money(c.value) + "（" + pct(frac * 100) + "）</title></path>");
+money(num(c.value)) + "（" + pct(frac * 100) + "）</title></path>");
 ang = end;
 });
 s.push('<text x="' + cx + '" y="' + (cy - 4) + '" text-anchor="middle" font-size="13" fill="var(--text-muted)">本月營收</text>');
@@ -243,48 +327,55 @@ money(total) + "</text>");
 document.getElementById("donut").innerHTML = s.join("");
 document.getElementById("donutLegend").innerHTML = D.channels.map(function (c, i) {
 return '<span><i style="background:' + cv(SER[i % SER.length]) + '"></i>' + esc(c.name) +
-" " + pct(c.value / total * 100) + "</span>";
+" " + pct(num(c.value) / total * 100) + "</span>";
 }).join("");
 }
+
 /* 熱銷橫條 */
 function topItems() {
 var W = 720, PL = 138, PR = 74, PT = 8, rowH = 33;
-var items = D.topItems, H = PT + items.length * rowH + 6;
+var items = D.topItems, H = PT + Math.max(items.length, 1) * rowH + 6;
 document.getElementById("topItems").setAttribute("viewBox", "0 0 " + W + " " + H);
-var max = Math.max.apply(null, items.map(function (x) { return x.amount; })) * 1.02;
+if (!items.length) { document.getElementById("topItems").innerHTML = emptyNote(W, H / 2, "本月尚無銷售紀錄"); return; }
+/* 防除以零：所有品項金額皆 0 時 amount/max = NaN → 長條 width 變 NaN。（QA 2026-08-04 A2） */
+var max = Math.max.apply(null, items.map(function (x) { return num(x.amount); })) * 1.02;
+if (!(max > 0)) max = 1;
 var s = [];
 items.forEach(function (x, i) {
-var y = PT + i * rowH, bw = (W - PL - PR) * (x.amount / max);
-var low = x.margin < D.lowMarginThreshold;
+var y = PT + i * rowH, bw = (W - PL - PR) * (num(x.amount) / max);
+var low = num(x.margin) < D.lowMarginThreshold;
 s.push('<text class="axis" x="' + (PL - 9) + '" y="' + (y + 18) + '" text-anchor="end" font-size="12" fill="var(--text-secondary)">' +
 esc(x.name) + "</text>");
 s.push('<rect x="' + PL + '" y="' + (y + 6) + '" width="' + bw + '" height="17" rx="2" fill="' +
-cv(low ? SER[2] : SER[0]) + '" opacity=".85"><title>' + esc(x.name) + "：" + money(x.amount) +
-"，毛利率 " + pct(x.margin) + "</title></rect>");
+cv(low ? SER[2] : SER[0]) + '" opacity=".85"><title>' + esc(x.name) + "：" + money(num(x.amount)) +
+"，毛利率 " + pct(num(x.margin)) + "</title></rect>");
 s.push('<text class="axis" x="' + (PL + bw + 7) + '" y="' + (y + 19) + '" font-size="11">' +
-money(x.amount) + "　" + pct(x.margin) + "</text>");
+money(num(x.amount)) + "　" + pct(num(x.margin)) + "</text>");
 });
 document.getElementById("topItems").innerHTML = s.join("");
 }
+
 /* 補貨表 */
 function lowStock() {
 document.getElementById("lowStock").innerHTML = D.lowStock.map(function (x) {
-var ratio = x.qty / x.safe;
+var safe = num(x.safe), ratio = safe > 0 ? num(x.qty) / safe : (num(x.qty) > 0 ? 1 : 0);
 var cls = ratio <= 0.34 ? "p-crit" : (ratio <= 0.67 ? "p-warn" : "p-ok");
 var txt = ratio <= 0.34 ? "急" : (ratio <= 0.67 ? "偏低" : "注意");
-return "<tr><td>" + esc(x.name) + '</td><td class="num">' + nf.format(x.qty) +
-'</td><td class="num">' + nf.format(x.safe) + '</td><td><span class="pill ' + cls + '">' +
+return "<tr><td>" + esc(x.name) + '</td><td class="num">' + nf.format(num(x.qty)) +
+'</td><td class="num">' + nf.format(num(x.safe)) + '</td><td><span class="pill ' + cls + '">' +
 txt + "</span></td></tr>";
 }).join("");
 }
+
 /* 訂單表 */
 function orders() {
 document.getElementById("orders").innerHTML = D.orders.map(function (o) {
 return "<tr><td>" + esc(o.date) + "</td><td>" + esc(o.customer) + "</td><td>" +
-esc(o.item) + "</td><td>" + esc(o.channel) + '</td><td class="num">' + money(o.amount) +
-'</td><td class="num">' + money(o.profit) + "</td></tr>";
+esc(o.item) + "</td><td>" + esc(o.channel) + '</td><td class="num">' + money(num(o.amount)) +
+'</td><td class="num">' + money(num(o.profit)) + "</td></tr>";
 }).join("");
 }
+
 function render() { tiles(); trend(); donut(); topItems(); lowStock(); orders(); }
 render();
 })();

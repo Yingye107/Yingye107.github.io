@@ -147,7 +147,17 @@ showTab(APPS[0].key);
   }
   function clearLocal(){ DATA_KEYS.forEach(function(k){ localStorage.removeItem(k); }); }
   function setOwner(){ if(uid) localStorage.setItem('fb-owner', uid); }
-  function getConfig(){ try{ return JSON.parse(localStorage.getItem(CFG_KEY)||'null'); }catch(e){ return null; } }
+  /* 壞掉的雲端設定不靜默丟棄：另存備份鍵並告知，否則使用者只會看到「未設定雲端」
+     卻不知道原本設好的東西壞了。（QA 2026-08-04 B2，與各工具的 C1 防法一致） */
+  function getConfig(){
+    var raw=null;
+    try{ raw=localStorage.getItem(CFG_KEY); return JSON.parse(raw||'null'); }
+    catch(e){
+      try{ if(raw) localStorage.setItem(CFG_KEY+'-corrupt-'+Date.now(), raw); }catch(_){}
+      setTimeout(function(){ alert('雲端設定資料損毀，已另存備份並重置為未設定。請重新貼上 Firebase 設定。'); },0);
+      return null;
+    }
+  }
   function setStatus(t,c){ statusEl.textContent=t; statusEl.className=c||''; }
   function askConfig(){
     var raw=prompt('貼上你的 Firebase 設定（firebaseConfig 的 { ... } 內容或整段皆可）：');
