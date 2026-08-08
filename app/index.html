@@ -48,7 +48,7 @@ nav button.on{color:var(--accent);font-weight:700}
 <span class="sp"></span>
 <button class="hbtn" id="theme">深淺色</button>
 </header>
-<div id="syncBar"><span id="syncStatus">✔ 自動存檔（本機）</span><span class="sp"></span><button class="hbtn" id="saveNowBtn">立即存檔</button><button class="hbtn" id="cloudBtn" style="display:none"></button></div>
+<div id="syncBar"><span id="syncStatus">✔ 自動存檔（本機）</span><span class="sp"></span><button class="hbtn" id="saveNowBtn">立即存檔</button><button class="hbtn" id="cloudBtn" style="display:none"></button><button class="hbtn" id="delCloudBtn" style="display:none" title="永久刪除雲端上的這份資料（個資法賦予當事人的刪除權，可自助執行，不必來信申請）">刪除雲端資料</button></div>
 <main id="main"></main>
 <nav><div class="row" id="tabsBottom"></div></nav>
 <script>
@@ -128,6 +128,7 @@ showTab(APPS[0].key);
   var CFG_KEY='fb-config';
   var statusEl=document.getElementById('syncStatus');
   var cloudBtn=document.getElementById('cloudBtn');
+  var delCloudBtn=document.getElementById('delCloudBtn');
   var fb=null, db=null, auth=null, uid=null, lastAppliedAt=null, pushTimer=null, unsub=null;
   function decideMerge(local, cloud){
     var lHas=local&&local.savedAt&&local.data&&Object.keys(local.data).length>0;
@@ -200,14 +201,68 @@ showTab(APPS[0].key);
     }catch(e){ setStatus('emu err:'+e.message,'warn'); } }
     authMod.onAuthStateChanged(auth, function(user){
       if(user){ uid=user.uid; onLogin(); }
-      else { uid=null; window.__cloudPushNow=null; if(unsub){unsub();unsub=null;} cloudBtn.textContent='登入雲端'; cloudBtn.onclick=login; setStatus('✔ 自動存檔（本機）｜未登入雲端'); }
+      else { uid=null; window.__cloudPushNow=null; if(unsub){unsub();unsub=null;} delCloudBtn.style.display='none'; cloudBtn.textContent='登入雲端'; cloudBtn.onclick=login; setStatus('✔ 自動存檔（本機）｜未登入雲端'); }
     });
   }).catch(function(e){
     setStatus('⚠ 雲端載入失敗（離線或設定錯）；本機照常運作','warn');
     cloudBtn.style.display=''; cloudBtn.textContent='重設雲端設定';
     cloudBtn.onclick=function(){ localStorage.removeItem(CFG_KEY); location.reload(); };
   });
-  function login(){ fb.authMod.signInWithPopup(auth, new fb.authMod.GoogleAuthProvider()).catch(function(e){ setStatus('⚠ 登入失敗：'+e.message,'warn'); }); }
+  /* ── 個資告知與同意（QA E1，2026-08-08）──────────────────────────
+     為什麼一定要有：登入雲端之後，這台裝置上的四個資料檔會被推送到 Firestore，
+     其中三支工具存的是「案主的顧客」的姓名／電話／地址／統編。
+     個資法第 8 條要求向當事人蒐集時明確告知蒐集目的、類別、期間、對象與方式；
+     受託處理者於委託關係終止時應能刪除。此前這一頁「隱私／個資／同意／刪除」四詞出現 0 次。
+     這段告知不能取代書面附約（portfolio/00-接案資料包/06-雲端版交付附約與說明.md）：
+     它是「使用當下的告知與同意」，附約是「委外處理的書面約定」，兩者都要有。
+     ⚠ 字串裡的換行必須寫成兩個反斜線加 n——這裡是 template literal，
+        單個反斜線加 n 會被求值成真換行而打斷字串（下方建置閘門會擋，別繞過它）。 */
+  var CONSENT_KEY='fb-consent-v1';
+  var CONSENT_TEXT=
+    '啟用雲端同步前，請先確認以下事項：\n\n'+
+    '【會上傳什麼】報價請款、派工排班、收支流水帳、維修保固四項工具的全部資料，\n'+
+    '　　其中包含你輸入的客戶姓名、電話、地址、統一編號等個人資料。\n'+
+    '【存放在哪】Google Firebase Firestore，資料綁定你登入的 Google 帳號，\n'+
+    '　　其他帳號讀不到（存取規則已設定並經模擬器驗證）。\n'+
+    '【目的與期間】僅供本工具跨裝置同步之用，保存至你自行刪除或終止使用為止。\n'+
+    '【你的權利】可隨時按「刪除雲端資料」把雲端那份完整刪除；不登入就完全不會上傳。\n'+
+    '【你的責任】你記錄的是「你的客戶」的個人資料，在個資法下蒐集者是你，\n'+
+    '　　你對他們負有告知與保護義務。\n\n'+
+    '按「確定」代表你已了解並同意以上方式處理資料。\n'+
+    '按「取消」則不啟用雲端，工具仍可完整離線使用。';
+  function login(){
+    if(localStorage.getItem(CONSENT_KEY)!=='1'){
+      if(!confirm(CONSENT_TEXT)){ setStatus('✔ 自動存檔（本機）｜未啟用雲端'); return; }
+      try{ localStorage.setItem(CONSENT_KEY,'1'); }catch(e){}
+    }
+    fb.authMod.signInWithPopup(auth, new fb.authMod.GoogleAuthProvider()).catch(function(e){ setStatus('⚠ 登入失敗：'+e.message,'warn'); });
+  }
+  /* 刪除雲端資料：個資法賦予當事人的刪除請求權，必須是「可自助執行的按鈕」，
+     不能只寫在合約裡叫人來信申請。
+     ⚠ 順序很重要：先停監聽 → 再取消待送出的推送 → 最後才刪。
+        少任一步，刪完會被 onSnapshot 拉回或被 pushTimer 寫回去，變成「刪不掉」。 */
+  function deleteCloud(){
+    if(!uid) return;
+    if(!confirm('確定要刪除雲端上的這份資料嗎？\n\n'+
+                '· 雲端那一份會被永久刪除，無法復原。\n'+
+                '· 這台裝置上的本機資料不受影響，工具照常使用。\n'+
+                '· 刪除後會自動登出並停止同步。')) return;
+    if(!confirm('再確認一次：這個動作無法復原。\n\n真的要刪除雲端資料嗎？')) return;
+    setStatus('☁ 刪除中…');
+    if(unsub){ unsub(); unsub=null; }
+    window.__cloudPushNow=null; clearTimeout(pushTimer); pushTimer=null;
+    fb.fsMod.deleteDoc(userDoc()).then(function(){
+      try{ localStorage.removeItem(CONSENT_KEY); localStorage.removeItem('fb-owner'); }catch(e){}
+      lastAppliedAt=null;
+      return fb.authMod.signOut(auth);
+    }).then(function(){
+      setStatus('✔ 雲端資料已刪除，已登出（本機資料保留）');
+      alert('雲端資料已刪除，並已登出。\n\n這台裝置上的資料仍在，工具可正常使用。');
+    }).catch(function(e){
+      setStatus('⚠ 刪除失敗：'+e.message,'warn');
+      alert('刪除失敗：'+e.message+'\n\n資料可能仍在雲端，請重試或聯絡開發者。');
+    });
+  }
   function logout(){
     var clear=confirm('要同時清除這台裝置上的本機資料嗎？\n\n確定＝清除（多人共用這台裝置時選這個；資料仍在雲端，下次登入會拉回）\n取消＝保留在本機');
     fb.authMod.signOut(auth).then(function(){
@@ -217,6 +272,7 @@ showTab(APPS[0].key);
   function userDoc(){ return fb.fsMod.doc(db,'users',uid); }
   function onLogin(){
     cloudBtn.textContent='登出（'+((auth.currentUser&&auth.currentUser.email)||uid.slice(0,6))+'）'; cloudBtn.onclick=logout;
+    delCloudBtn.style.display=''; delCloudBtn.onclick=deleteCloud;
     window.__cloudPushNow=function(){ clearTimeout(pushTimer); pushNow(); };   // 「立即存檔」按鈕用
     setStatus('☁ 同步中…');
     fb.fsMod.getDoc(userDoc()).then(function(snap){
